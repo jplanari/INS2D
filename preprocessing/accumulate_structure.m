@@ -141,6 +141,16 @@ voi = {
 
 accumulate_object;
 
+%% stability parameters
+object = 'stability';
+
+voi = {
+  'ev_compute', 0; ... % if 1, calculate eigenvalues  
+  'ev_n', 1; ... % frequency with which eigenvalues are calculated
+};
+
+accumulate_object;
+
 %% immersed boundary method
 object = 'ibm';
 

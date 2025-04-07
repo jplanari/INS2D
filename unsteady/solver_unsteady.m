@@ -110,6 +110,12 @@ while(n<=nt)
             error('time integration method unknown');
     end
     
+    if (options.stability.ev_compute == 1)
+        if (rem(n,options.stability.ev_n) == 0)
+            options = evaluateEV_FOM(V,options);
+        end
+    end
+    
     
     % the velocities and pressure that are just computed are at
     % the new time level t+dt:
