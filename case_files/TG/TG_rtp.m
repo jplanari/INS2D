@@ -37,3 +37,29 @@ axis square
 colorbar
 caxis([min(labels) max(labels)]);
 grid
+
+%% eigenvalues
+
+if(options.stability.ev_plot==1 && n>options.stability.ev_n)
+    figure(2)
+    set(gcf,'color','w')
+    dt = options.time.dt;
+    ev_C = options.stability.ev_C*dt;
+    ev_D = options.stability.ev_D*dt;
+    ev_CD = options.stability.ev_CD*dt;
+    eb_C = options.stability.eb_C*dt;
+    eb_D = options.stability.eb_D*dt;
+    scatter(real(ev_C),imag(ev_C),'filled')
+    grid on
+    hold on
+    scatter(real(ev_D),imag(ev_D),'filled')
+    scatter(real(ev_CD),imag(ev_CD),'filled')
+    plot([0,0],[-eb_C,eb_C],'-k')
+    plot([-eb_D,-eb_D],[-eb_C,eb_C],'-k')
+    plot([-eb_D,0],[eb_C,eb_C],'-k')
+    plot([-eb_D,0],[-eb_C,-eb_C],'-k')
+    legend({'Convective','Diffusive','-C+D','actual bounds'},'interpreter','latex')
+    xlabel('Real axis','interpreter','latex')
+    ylabel('Imaginary axis','interpreter','latex')
+    hold off
+end

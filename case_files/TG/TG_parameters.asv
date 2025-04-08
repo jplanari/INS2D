@@ -23,11 +23,8 @@ mesh_list    = 10; %[10 20 40 80];
     y1      = 0;
     y2      = 2;
 
-    Nx      = 20;         % number of volumes in the x-direction
-    Ny      = 20;         % number of volumes in the y-direction
-    
-    %Nx      = mesh_list(j);         % number of volumes in the x-direction
-    %Ny      = mesh_list(j);         % number of volumes in the y-direction
+    Nx      = mesh_list(j);         % number of volumes in the x-direction
+    Ny      = mesh_list(j);         % number of volumes in the y-direction
 
     sx      = 1;                    % stretch factor
     sy      = 1;
@@ -110,11 +107,10 @@ mesh_list    = 10; %[10 20 40 80];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% stability settings, for unsteady solver
+%%% stability settings
     ev_compute      = 1;
     ev_n            = 20;
     ev_plot         = 1;
-    gershgorin      = 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -147,6 +147,9 @@ object = 'stability';
 voi = {
   'ev_compute', 0; ... % if 1, calculate eigenvalues  
   'ev_n', 1; ... % frequency with which eigenvalues are calculated
+  'ev_plot', 0; ...% if 1, plot eigenvalues
+  'gershgorin', 0; ...% if 1, compute eigenbounds with Gershgorin circle theorem
+  'display_ebs', 1; ...% if 1 (if gershgorin=1), display eigenbounds
 };
 
 accumulate_object;

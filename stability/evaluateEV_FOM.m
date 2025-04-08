@@ -1,12 +1,12 @@
 function options = evaluateEV_FOM(C, options)
     order4 = options.discretization.order4;
-
+    Oinv = sparse(diag(options.grid.Omp_inv));
     [Ccu, Ccv] = convectiveOperator(C, options, order4);
     [Dcu, Dcv] = diffusiveOperator(options);
     
-    ev_C = [eig(full(Ccu)); eig(full(Ccv))];
-    ev_D = [eig(Dcu); eig(Dcv)];
-    ev_CD = [eig(full(-Ccu+Dcu)); eig(full(-Ccv+Dcv))];
+    ev_C = [eig(full(Oinv*Ccu)); eig(full(Oinv*Ccv))];
+    ev_D = [eig(full(Oinv*Dcu)); eig(full(Oinv*Dcv))];
+    ev_CD = [eig(full(Oinv*(-Ccu+Dcu))); eig(full(Oinv*(-Ccv+Dcv)))];
 
     options.stability.ev_C = ev_C;
     options.stability.ev_D = ev_D;

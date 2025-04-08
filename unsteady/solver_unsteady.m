@@ -112,7 +112,16 @@ while(n<=nt)
     
     if (options.stability.ev_compute == 1)
         if (rem(n,options.stability.ev_n) == 0)
+            fprintf('Computing eigenvalues...\n')
             options = evaluateEV_FOM(V,options);
+        end
+    end
+
+    if(options.stability.gershgorin == 1)
+        options = diffusiveGersh(options);
+        options = convectiveGersh(V,options);
+        if(options.stability.display_ebs == 1)
+            display(options.stability.gersh)
         end
     end
     
