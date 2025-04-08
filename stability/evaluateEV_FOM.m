@@ -1,0 +1,68 @@
+function options = evaluateEV_FOM(C, options)
+    order4 = options.discretization.order4;
+
+    [Ccu, Ccv] = convectiveOperator(C, options, order4);
+    [Dcu, Dcv] = diffusiveOperator(options);
+    
+    ev_C = [eig(full(Ccu)); eig(full(Ccv))];
+    ev_D = [eig(Dcu); eig(Dcv)];
+    ev_CD = [eig(full(-Ccu+Dcu)); eig(full(-Ccv+Dcv))];
+
+    options.stability.ev_C = ev_C;
+    options.stability.ev_D = ev_D;
+    options.stability.ev_CD = ev_CD;
+    options.stability.eb_C = max(abs(ev_C));
+    options.stability.eb_D = max(abs(ev_D));
+end
+
+function [Dcu, Dcv] = diffusiveOperator(options)
+    visc = options.case.visc;
+    
+    switch visc
+        case 'laminar'
+            Dcu = options.discretization.Diffu;
+            Dcv = options.discretization.Diffv;
+        otherwise
+            error('other diffusive methods than laminar not implemented')
+    end
+end
+
+function [Ccu, Ccv] = convectiveOperator(C, options, order4)
+    indu = options.grid.indu;
+    indv = options.grid.indv;
+
+    cu = C(indu);
+    cv = C(indv);
+
+    if (order4 == 0)
+        Cux = options.discretization.Cux;
+        Cuy = options.discretization.Cuy;
+        Cvx = options.discretization.Cvx;
+        Cvy = options.discretization.Cvy;
+    
+        Au_ux = options.discretization.Au_ux;
+        Au_uy = options.discretization.Au_uy;
+        Av_vx = options.discretization.Av_vx;
+        Av_vy = options.discretization.Av_vy;
+    
+        Iu_ux = options.discretization.Iu_ux;
+        Iv_uy = options.discretization.Iv_uy;
+        Iu_vx = options.discretization.Iu_vx;
+        Iv_vy = options.discretization.Iv_vy;
+    
+        yIu_ux = options.discretization.yIu_ux;
+        yIv_uy = options.discretization.yIv_uy;
+        yIu_vx = options.discretization.yIu_vx;
+        yIv_vy = options.discretization.yIv_vy;
+    else
+         error('order4 implementation in evaluateEV.m not done');
+    end
+
+    uf_ux = Iu_ux*cu+yIu_ux;
+    vf_uy  = Iv_uy*cv+yIv_uy;
+    uf_vx  = Iu_vx*cu+yIu_vx;
+    vf_vy  = Iv_vy*cv+yIv_vy;
+
+    Ccu = Cux*sparse(diag(uf_ux))*Au_ux + Cuy*sparse(diag(vf_uy))*Au_uy;
+    Ccv = Cvx*sparse(diag(uf_vx))*Av_vx + Cvy*sparse(diag(vf_vy))*Av_vy;
+end

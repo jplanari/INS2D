@@ -55,6 +55,7 @@ addpath('spatial/ROM/');
 addpath('steady/');
 addpath('unsteady/');
 addpath('testsuite/');
+addpath('stability/')
 
 % path for inputfiles will be determined based on the value of 'restart'
 % if (~isempty(strfind(path,'inputfiles')))
