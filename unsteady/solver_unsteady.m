@@ -59,6 +59,12 @@ if (method == 62 || method == 92 || method==142 || method==172 || method==182 ||
     V_ep(:,1) = V;
 end
 
+if(options.stability.gershgorin == 1)
+    if(options.stability.stab_region == 1)
+        options = stabilityRegion_ERK(options);
+    end
+end
+
 
 dtn    = dt;
 
@@ -118,17 +124,23 @@ while(n<=nt)
     end
 
     if(options.stability.gershgorin == 1)
-        options = diffusiveGersh(options);
-        options = convectiveGersh(V,options);
+        [dt,options] = set_timestep_stab(V,options);
         if(options.stability.display_ebs == 1)
             display(options.stability.gersh)
         end
     end
+
+
     
     
     % the velocities and pressure that are just computed are at
     % the new time level t+dt:
     t = tn + dt;
+    
+    if t>t_end
+        break;
+    end
+
     time(n) = t;
     
     % check residuals, conservation, set timestep, write output files

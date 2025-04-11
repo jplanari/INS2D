@@ -1,4 +1,4 @@
-% estimate time step based on eigenvalues of operators, 
+  % estimate time step based on eigenvalues of operators, 
 % using Gershgorin
 
 % for explicit methods only

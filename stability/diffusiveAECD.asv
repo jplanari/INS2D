@@ -1,0 +1,12 @@
+function [options] = diffusiveAECD(options)
+    visc = options.case.visc;
+    AECD = options.stability.AECD;
+    As = options.discretization.As;
+    nu = 1/options.fluid.Re;
+    Ds = options.discretization.Ds;
+
+    eb = max(AECD*As.*Ds*nu);
+
+    options.stability.AlgEigCD.eb_D;
+end
+

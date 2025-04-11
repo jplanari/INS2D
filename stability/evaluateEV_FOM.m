@@ -30,9 +30,14 @@ end
 function [Ccu, Ccv] = convectiveOperator(C, options, order4)
     indu = options.grid.indu;
     indv = options.grid.indv;
+    
+    N1 = options.grid.N1;
+    N2 = options.grid.N2;
+    N3 = options.grid.N3;
+    N4 = options.grid.N4;
 
-    cu = C(indu);
-    cv = C(indv);
+    uh = C(indu);
+    vh = C(indv);
 
     if (order4 == 0)
         Cux = options.discretization.Cux;
@@ -58,11 +63,8 @@ function [Ccu, Ccv] = convectiveOperator(C, options, order4)
          error('order4 implementation in evaluateEV.m not done');
     end
 
-    uf_ux = Iu_ux*cu+yIu_ux;
-    vf_uy  = Iv_uy*cv+yIv_uy;
-    uf_vx  = Iu_vx*cu+yIu_vx;
-    vf_vy  = Iv_vy*cv+yIv_vy;
-
-    Ccu = Cux*sparse(diag(uf_ux))*Au_ux + Cuy*sparse(diag(vf_uy))*Au_uy;
-    Ccv = Cvx*sparse(diag(uf_vx))*Av_vx + Cvy*sparse(diag(vf_vy))*Av_vy;
+    Ccu = Cux*spdiags(Iu_ux*uh+yIu_ux,0,N1,N1)*Au_ux + ...
+         Cuy*spdiags(Iv_uy*vh+yIv_uy,0,N2,N2)*Au_uy;
+    Ccv = Cvx*spdiags(Iu_vx*uh+yIu_vx,0,N3,N3)*Av_vx + ...
+         Cvy*spdiags(Iv_vy*vh+yIv_vy,0,N4,N4)*Av_vy; 
 end

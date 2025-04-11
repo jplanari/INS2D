@@ -3,8 +3,15 @@ function options = convectiveGersh(C, options)
   indu = options.grid.indu;
   indv = options.grid.indv;
 
-  cu = C(indu);
-  cv = C(indv);
+  N1 = options.grid.N1;
+  N2 = options.grid.N2;
+  N3 = options.grid.N3;
+  N4 = options.grid.N4;
+  Nu = options.grid.Nu;
+  Nv = options.grid.Nv;
+
+  uh = C(indu);
+  vh = C(indv);
 
   if (order4 == 0)
     Cux = options.discretization.Cux;
@@ -29,18 +36,18 @@ function options = convectiveGersh(C, options)
   else
     error('order4 implementation in evaluateEV.m not done');
   end
+    
+    Cu = Cux*spdiags(Iu_ux*uh+yIu_ux,0,N1,N1)*Au_ux + ...
+         Cuy*spdiags(Iv_uy*vh+yIv_uy,0,N2,N2)*Au_uy;
+    Cv = Cvx*spdiags(Iu_vx*uh+yIu_vx,0,N3,N3)*Av_vx + ...
+         Cvy*spdiags(Iv_vy*vh+yIv_vy,0,N4,N4)*Av_vy; 
 
-  uf_ux = Iu_ux*cu+yIu_ux;
-  vf_uy  = Iv_uy*cv+yIv_uy;
-  uf_vx  = Iu_vx*cu+yIu_vx;
-  vf_vy  = Iv_vy*cv+yIv_vy;
-
-  Ouinv = sparse(diag(options.grid.Omu_inv));
-  Ovinv = sparse(diag(options.grid.Omv_inv));
-  
-  Ccu = Ouinv*(Cux*sparse(diag(uf_ux))*Au_ux + Cuy*sparse(diag(vf_uy))*Au_uy);
-  Ccv = Ovinv*(Cvx*sparse(diag(uf_vx))*Av_vx + Cvy*sparse(diag(vf_vy))*Av_vy);
-  
-  options.stability.gersh.eb_C = max(gershgorin(Ccu),gershgorin(Ccv));
+    test = spdiags(options.grid.Omu_inv,0,Nu,Nu)*Cu;
+    %sum_conv_u = abs(test)*ones(Nu,1) - diag(abs(test)) - diag(test);
+    sum_conv_u = abs(test)*ones(Nu,1);
+    test = spdiags(options.grid.Omv_inv,0,Nv,Nv)*Cv;
+    %sum_conv_v = abs(test)*ones(Nv,1) - diag(abs(test)) - diag(test);
+    sum_conv_v = abs(test)*ones(Nv,1);
+    options.stability.gersh.eb_C = max([max(sum_conv_u) max(sum_conv_v)]);
 
 end

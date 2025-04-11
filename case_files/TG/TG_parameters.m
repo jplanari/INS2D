@@ -8,7 +8,7 @@ mesh_list    = 10; %[10 20 40 80];
 %%% flow properties
 %     u_inf   = 1;
 %     delta   = 1;
-    Re      = 100;                  % Reynolds number
+    Re      = 1000;                  % Reynolds number
     visc    = 'laminar';            % laminar or turbulent; 
                                       % influences stress tensor
     nu      = 1/Re;
@@ -22,12 +22,9 @@ mesh_list    = 10; %[10 20 40 80];
     x2      = 2;
     y1      = 0;
     y2      = 2;
-
-    Nx      = 20;         % number of volumes in the x-direction
-    Ny      = 20;         % number of volumes in the y-direction
     
-    %Nx      = mesh_list(j);         % number of volumes in the x-direction
-    %Ny      = mesh_list(j);         % number of volumes in the y-direction
+    Nx      = mesh_list(j);         % number of volumes in the x-direction
+    Ny      = mesh_list(j);         % number of volumes in the y-direction
 
     sx      = 1;                    % stretch factor
     sy      = 1;
@@ -72,7 +69,7 @@ mesh_list    = 10; %[10 20 40 80];
         dt            = 0.01;      % time step (for explicit methods it can be
                                    % determined during running with dynamic_dt)
         t_start       = 0;        % start time
-        t_end         = 1;         % end time
+        t_end         = 200;         % end time
 
         CFL           = 1;              
         timestep.set  = 0;         % time step determined in timestep.m, 
@@ -111,10 +108,11 @@ mesh_list    = 10; %[10 20 40 80];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% stability settings, for unsteady solver
-    ev_compute      = 1;
-    ev_n            = 20;
+    ev_compute      = 0;
+    ev_n            = 1;
     ev_plot         = 1;
     gershgorin      = 1;
+    stab_region     = 0; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -150,6 +150,7 @@ voi = {
   'ev_plot', 0; ...% if 1, plot eigenvalues
   'gershgorin', 0; ...% if 1, compute eigenbounds with Gershgorin circle theorem
   'display_ebs', 1; ...% if 1 (if gershgorin=1), display eigenbounds
+  'stab_region', 0; ...% if 1, compute stability region
 };
 
 accumulate_object;

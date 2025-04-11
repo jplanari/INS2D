@@ -39,11 +39,14 @@ caxis([min(labels) max(labels)]);
 grid
 
 %% eigenvalues
-
+if(options.stability.ev_compute==1)
 if(options.stability.ev_plot==1 && n>options.stability.ev_n)
     figure(2)
     set(gcf,'color','w')
-    dt = options.time.dt;
+    if(options.stability.stab_region == 1)
+        real_reg = -options.stability.region.R.*cos(options.stability.region.phi);
+        imag_reg = options.stability.region.R.*sin(options.stability.region.phi);
+    end
     ev_C = options.stability.ev_C*dt;
     ev_D = options.stability.ev_D*dt;
     ev_CD = options.stability.ev_CD*dt;
@@ -66,8 +69,15 @@ if(options.stability.ev_plot==1 && n>options.stability.ev_n)
     plot([-eb_g_D,-eb_g_D],[-eb_g_C,eb_g_C],'-r')
     plot([-eb_g_D,0],[eb_g_C,eb_g_C],'-r')
     plot([-eb_g_D,0],[-eb_g_C,-eb_g_C],'-r')
-    legend({'$eig(\Omega^{-1}C(\mathbf{u}))$','$eig(\Omega^{-1}D)$','$eig(\Omega^{-1}(-C(\mathbf{u})+D))$','Actual bounds','Gershgorin bounds'},'interpreter','latex')
+    if(options.stability.stab_region == 1)
+        plot(real_reg,imag_reg,'--k')
+        plot(real_reg,-imag_reg,'--k')
+    end
+    legend({'$eig(\Omega^{-1}C(\mathbf{u}))$','$eig(\Omega^{-1}D)$',...
+        '$eig(\Omega^{-1}(-C(\mathbf{u})+D))$','Actual bounds',...
+        'Gershgorin bounds'},'interpreter','latex')
     xlabel('Real axis','interpreter','latex')
     ylabel('Imaginary axis','interpreter','latex')
     hold off
+end
 end
