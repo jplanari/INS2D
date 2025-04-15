@@ -3,7 +3,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% flow properties
-    Re      = 1000;                  % Reynolds number
+    Re      = 1e5;                  % Reynolds number
     visc    = 'laminar';              % laminar or turbulent; 
                                       % influences stress tensor
     nu      = 1/Re;
@@ -18,8 +18,8 @@
     y1      = 0;
     y2      = 2*pi;
 
-    Nx      = 40;          % number of volumes in the x-direction
-    Ny      = 40;          % number of volumes in the y-direction
+    Nx      = 200;          % number of volumes in the x-direction
+    Ny      = 200;          % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
     sy      = 1;
@@ -76,7 +76,7 @@
     dt            = 0.01;       % time step (for explicit methods it can be
                                % determined during running with dynamic_dt)
     t_start       = 0;        % start time
-    t_end         = 1;         % end time
+    t_end         = 10;         % end time
 
     CFL           = 1;              
     timestep.set  = 0;         % time step determined in timestep.m, 
@@ -179,10 +179,10 @@
     restart.write    = 0;          % write restart files 
     restart.n        = 10;         % every restart.n timesteps
     
-    save_file        = 0;          % save all matlab data after program is completed (e.g. necessary for running ROM afterwards)
+    save_file        = 1;          % save all matlab data after program is completed (e.g. necessary for running ROM afterwards)
     path_results     = 'results';  % path where results are stored
-    save_results     = 0;          % write information during iterations/timesteps
-    save_unsteady    = 0;          % store unsteady simulation data at each time step (velocity + pressure) in memory;
+    save_results     = 1;          % write information during iterations/timesteps
+    save_unsteady    = 1;          % store unsteady simulation data at each time step (velocity + pressure) in memory;
                                    % can be useful in postprocessing
                                    % studies and ROM construction
                                    % requires save_file=1 to be written to a datafile

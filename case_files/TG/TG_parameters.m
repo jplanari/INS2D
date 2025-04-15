@@ -1,7 +1,7 @@
 % input file                
 % project = 'TG';   % project name used in filenames
 run_multiple = 1;
-mesh_list    = 10; %[10 20 40 80];
+mesh_list    = 80; %[10 20 40 80];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,7 +69,7 @@ mesh_list    = 10; %[10 20 40 80];
         dt            = 0.01;      % time step (for explicit methods it can be
                                    % determined during running with dynamic_dt)
         t_start       = 0;        % start time
-        t_end         = 200;         % end time
+        t_end         = 50;         % end time
 
         CFL           = 1;              
         timestep.set  = 0;         % time step determined in timestep.m, 
@@ -110,8 +110,8 @@ mesh_list    = 10; %[10 20 40 80];
 %%% stability settings, for unsteady solver
     ev_compute      = 0;
     ev_n            = 1;
-    ev_plot         = 1;
-    gershgorin      = 1;
+    ev_plot         = 0;
+    gershgorin      = 0;
     stab_region     = 0; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,10 +182,10 @@ mesh_list    = 10; %[10 20 40 80];
     restart.write    = 0;          % write restart files 
     restart.n        = 50;         % every restart.n iterations
     
-    save_file        = 0;          % save all matlab data after program is completed
+    save_file        = 1;          % save all matlab data after program is completed
     path_results     = 'results';  % path where results are stored
-    save_results     = 0;          % write information during iterations/timesteps
-    save_unsteady    = 0;          % save unsteady simulation data (velocity + pressure)
+    save_results     = 1;          % write information during iterations/timesteps
+    save_unsteady    = 1;          % save unsteady simulation data (velocity + pressure)
             
     cw_output        = 1;          % command window output; 
                                    % 0: output file, 1: local command window;

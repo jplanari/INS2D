@@ -208,7 +208,7 @@ div_basis = max(abs(options.discretization.M*B),[],1); %
 % max over all columns:
 maxdiv_basis = max(div_basis);
 if (options.rom.rom_bc < 2)
-    if (maxdiv_basis > 1e-12)
+    if (maxdiv_basis > 1e-9)
         warning(['ROM basis not divergence free: ' num2str(maxdiv_basis)]);
         
         if (options.rom.helmholtz == 1)

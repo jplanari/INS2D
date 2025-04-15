@@ -60,6 +60,7 @@ if (method == 62 || method == 92 || method==142 || method==172 || method==182 ||
 end
 
 if(options.stability.gershgorin == 1)
+    options = setupAECD(options);
     if(options.stability.stab_region == 1)
         options = stabilityRegion_ERK(options);
     end
@@ -126,7 +127,7 @@ while(n<=nt)
     if(options.stability.gershgorin == 1)
         [dt,options] = set_timestep_stab(V,options);
         if(options.stability.display_ebs == 1)
-            display(options.stability.gersh)
+            display(options.stability.AlgEigCD)
         end
     end
 

@@ -1,15 +1,15 @@
 % input file                
 % project = 'shear_layer_ROM';   % project name used in filenames
 run_multiple = 1;
-M_list = [2 4 8 16 2 4 8 16];
-% M_list = 16;
+%M_list = [6 4 8 16 2 4 8 16];
+M_list = 4;
 % M_list = [16 16 16];
 % M_list = [2 2  4 4 8 8 16 16 32 32]; % 5 10 15 20 ];
 mesh_list = ones(length(M_list),1);
 method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% flow properties
-    Re      = 1e100;                  % Reynolds number
+    Re      = 1e5;                  % Reynolds number
     visc    = 'laminar';              % laminar or turbulent; 
                                       % influences stress tensor
     nu      = 1/Re;
@@ -54,7 +54,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     M      = M_list(j);     % number of modes used
     Mp     = M;     % number of pressure modes used (only needed if pressure_recovery=1)
 
-    t_sample  = 4;  % part of snapshot matrix used for building SVD
+    t_sample  = 1;  % part of snapshot matrix used for building SVD
     dt_sample = 0.01; % frequency of snapshots to be used for SVD
 
     precompute_convection = 1;
@@ -64,7 +64,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     pressure_precompute   = 0;
     process_iteration_FOM = 1; % execute the process_iteration script each time step (requires FOM evaluation)     
     weighted_norm         = 1;    
-    basis_type            = 1; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
+    basis_type            = 3; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
     mom_cons              = 0; %j>4;
     
     rom_bc = 0; % 0: homogeneous (no-slip, periodic); 
@@ -74,7 +74,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     % 40x40:
 %     snapshot_data = 'results/shear_layer01/matlab_data.mat';
     % 200x200:
-    snapshot_data = 'results/shear_layer_ROM_snapshots_rerunApril2020/matlab_data.mat';
+    snapshot_data = 'results/shear_layer_1.000e+05_200x200_0/matlab_data.mat';
     % 200x200, with RK4 until t=7
 %     snapshot_data = 'results/shear_layer_ROM_1.000e+100_200x200/matlab_data.mat';
     
@@ -104,7 +104,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
         dt            = 0.01;       % time step (for explicit methods it can be
                                    % determined during running with dynamic_dt)
         t_start       = 0;        % start time
-        t_end         = 4;         % end time
+        t_end         = 100;         % end time
 
         CFL           = 1;              
         timestep.set  = 0;         % time step determined in timestep.m, 

@@ -1,12 +1,14 @@
 function [dt,options] = set_timestep_stab(V,options)
 
-    options = diffusiveGersh(options);
-    options = convectiveGersh(V,options);
+    options = diffusiveAECD(options);
+    options = convectiveAECD(V,options);
     [~,b,~,~] = getRKmethod(options.time.RK);
     s = length(b);
+    ebR = options.stability.AlgEigCD.eb_D;
+    ebI = options.stability.AlgEigCD.eb_C;
 
-    eb_n = sqrt(options.stability.gersh.eb_C^2+options.stability.gersh.eb_D^2);
-    phi = atan(options.stability.gersh.eb_C/options.stability.gersh.eb_D);
+    eb_n = sqrt(ebR^2+ebI^2);
+    phi = atan(ebI/ebR);
     
     r = linspace(0.1,5,10000);
     for i=1:length(r)

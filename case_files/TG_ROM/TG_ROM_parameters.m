@@ -1,14 +1,14 @@
 % input file                
 % project = 'TG';   % project name used in filenames
 run_multiple = 1;
-mesh_list    = [40]; % 20 40 80];
+mesh_list    = [80]; % 20 40 80];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% flow properties
 %     u_inf   = 1;
 %     delta   = 1;
-    Re      = 100;                  % Reynolds number
+    Re      = 1000;                  % Reynolds number
     visc    = 'laminar';            % laminar or turbulent; 
                                       % influences stress tensor
     nu      = 1/Re;
@@ -49,28 +49,28 @@ mesh_list    = [40]; % 20 40 80];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% reduced order model
 
-    rom    = 1;      % set to 1 to use ROM solver
-    rom_type = 'FDG-Fourier'; % POD, FDG, Fourier; note that FDG is not really a ROM but we use the ROM framework
-    M      = 10; %Nx*Ny;     % number of modes used (not relevant for FDG)
-    Mp     = M;     % number of pressure modes used (only needed if pressure_recovery=1)
-
-    t_sample  = 4;  % part of snapshot matrix used for building SVD
-    dt_sample = 0.01; % frequency of snapshots to be used for SVD
-
-    precompute_convection = 0;
-    precompute_diffusion  = 0;
-    precompute_pressure   = 0;
-    precompute_force      = 0;
-    pressure_recovery     = 0;
-    pressure_precompute   = 0;
-    process_iteration_FOM = 0; % execute the process_iteration script each time step (requires FOM evaluation)     
-    weighted_norm         = 1;    
-%     basis_type            = 1; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
-%     mom_cons              = 0; %j>4;
+ rom    = 1;      % set to 1 to use ROM solver
+    M      = 5;     % number of velocity modes used
+    Mp     = M;     % number of pressure modes used
+    % the full snapshotdataset can be reduced by taking as index
+    % 1:Nskip:Nsnapshots
+    t_sample  = 20;  % part of snapshot matrix used for building SVD
+    dt_sample = 0.05; % frequency of snapshots to be used for SVD
+    precompute_convection = 1;
+    precompute_diffusion  = 1;
+    precompute_force      = 1; 
+    pressure_recovery     = 1; % compute pressure at each time step
+    pressure_precompute   = 1; % precompute PPE operator at ROM level
+    pressure_mean         = 0; % subtract mean pressure in constructing ROM
     
+    process_iteration_FOM = 1; % execute the process_iteration script each time step (requires FOM evaluation) 
+    basis_type            = 1; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots    
+    weighted_norm         = 1;
+
     rom_bc = 0; % 0: homogeneous (no-slip, periodic); 
                 % 1: non-homogeneous, time-independent;
-                % 2: non-homogeneous, time-dependent       
+                % 2: non-homogeneous, time-dependent
+    snapshot_data = 'results/TG_1.000e+03_80x80_2/matlab_data.mat';   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
