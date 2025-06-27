@@ -1,7 +1,7 @@
 % input file                
 % project = 'TG';   % project name used in filenames
 run_multiple = 1;
-mesh_list    = [80]; % 20 40 80];
+mesh_list    = [20]; % 20 40 80];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +49,7 @@ mesh_list    = [80]; % 20 40 80];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% reduced order model
 
- rom    = 1;      % set to 1 to use ROM solver
+    rom    = 1;      % set to 1 to use ROM solver
     M      = 5;     % number of velocity modes used
     Mp     = M;     % number of pressure modes used
     % the full snapshotdataset can be reduced by taking as index
@@ -59,8 +59,8 @@ mesh_list    = [80]; % 20 40 80];
     precompute_convection = 1;
     precompute_diffusion  = 1;
     precompute_force      = 1; 
-    pressure_recovery     = 1; % compute pressure at each time step
-    pressure_precompute   = 1; % precompute PPE operator at ROM level
+    pressure_recovery     = 0; % compute pressure at each time step
+    pressure_precompute   = 0; % precompute PPE operator at ROM level
     pressure_mean         = 0; % subtract mean pressure in constructing ROM
     
     process_iteration_FOM = 1; % execute the process_iteration script each time step (requires FOM evaluation) 
@@ -70,7 +70,7 @@ mesh_list    = [80]; % 20 40 80];
     rom_bc = 0; % 0: homogeneous (no-slip, periodic); 
                 % 1: non-homogeneous, time-independent;
                 % 2: non-homogeneous, time-dependent
-    snapshot_data = 'results/TG_1.000e+03_80x80_2/matlab_data.mat';   
+    snapshot_data = 'results/TG_1.000e+03_20x20_4/matlab_data.mat';   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

@@ -10,18 +10,19 @@ switch options.rom.rom_type
         % FOM data file does not change, so we only load it once
         if (j==1)
             disp(['loading datafile...: ' snapshot_data]);
-            snapshots = load(snapshot_data,'uh_total','vh_total','p_total','dt','t_end','Re','k','umom','vmom','maxdiv','Vbc');
+            snapshots = load(snapshot_data,'uh_total','vh_total','p_total','dts','dt','t_end','Re','k','umom','vmom','maxdiv','Vbc');
 
             % dt that was used for creating the snapshot matrix:
-            dt_snapshots = snapshots.dt;
-            options.rom.dt_snapshots = dt_snapshots;
+            % dt_snapshots = snapshots.dt;
+            % options.rom.dt_snapshots = dt_snapshots;
             
             if (snapshots.Re ~= Re)
                 error('Reynolds numbers of snapshot data and current simulation do not match');
             end
             
             % find indices of snapshot matrix that are needed
-            snapshot_sample_index = getSampleIndex(options.rom);
+            % snapshot_sample_index = getSampleIndex(options.rom);
+            snapshot_sample_index = 1:length(snapshots.dts);
            
         end
         
@@ -70,6 +71,11 @@ precompute_start = toc;
 options = operator_rom(options);
 precompute_end(j) = toc-precompute_start
 
+%% Initialize RedEigCD eigma method
+options = evaluateCrEV(options,'eig');
+Cl = options.rom.Conv_linear;
+options.rom.eb_Cl = max(abs(eig(0.5*(Cl-Cl'))));
+options.rom.eb_D = max(abs(eig(options.rom.Diff-0.5*(Cl+Cl'))));
 
 %% initialize reduced order solution
 [R,q] = initializeROM(V,p,t,options);
@@ -154,11 +160,20 @@ eps    = 1e-12;
 disp('starting time-stepping...');
 
 time_start = toc
+dts = zeros(nt,1);
+ebd = options.rom.eb_D*ones(nt,1);
+ebc = zeros(nt,1);
 
-while(n<=nt)
+n=1;
+while(t<t_end)
     
     %% dynamic timestepping:
-    % set_timestep;
+    set_timestep_ROM;
+    fprintf('dt=%e, phi=%e, t=%e\n',dt,phi,t);
+    dts(n)=dt;
+    ebc(n)=ebI;
+
+    % fprintf("t=%e\n",t)
     
     %% perform one time step with the time integration method
     
@@ -201,10 +216,10 @@ while(n<=nt)
 
 end
 disp('finished time-stepping...');
-time_loop(j) = toc-time_start
-
+  time_loop(j) = toc-time_start
+  
 % get FOM velocity and pressure for postprocessing purposes
 V  = getFOM_velocity(R,t,options);
 if (options.rom.pressure_recovery == 1)
     p = getFOM_pressure(q,t,options);
-end
+ end

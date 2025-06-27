@@ -1,58 +1,140 @@
-%% ANALYZE PERFORMANCE OF GERSHGORIN vs AlgEigCD
+%% ANALYZE PERFORMANCE OF GERSHGORIN vs AlgEigCD vs staggered version
 
 clc;
 close all;
-clear all;
+clear;
 
 addpath('stability\');
+addpath('stability/LDC_options/');
 addpath('stability/TG_options/');
 
-cases = [10, 20, 40, 80];
+
+% cases = [10, 20, 40, 80];
+cases = [10, 20, 40];
 
 times_AECD_conv = zeros(size(cases));
+times_AECD_conv_st = zeros(size(cases));
 times_AECD_diff = zeros(size(cases));
 times_gers_conv = zeros(size(cases));
 times_gers_diff = zeros(size(cases));
 
-nRuns = 10000;
+AECD_conv = zeros(size(cases));
+AECD_conv_st = zeros(size(cases));
+AECD_diff = zeros(size(cases));
+gers_conv = zeros(size(cases));
+gers_diff = zeros(size(cases));
 
+eb_conv = zeros(size(cases));
+eb_diff = zeros(size(cases));
+ebC_coll = zeros(size(cases));
+
+ev = zeros(size(cases));
+
+% nRuns = 10000;
+nRuns=10 ;
+k=1;
 for i=1:length(cases)
     ms = cases(i);
+    % load(strcat('LDC_options_',num2str(ms)));
     load(strcat('TG_options_',num2str(ms)));
     t1=0;
     t2=0;
     t3=0;
     t4=0;
+    t5=0;
+    e1=0;
+    e2=0;
+    e3=0;
+    e4=0;
+    e5=0;
+    e6=0;
+    e7=0;
     options = setupAECD(options);
-    dummyVel = rand(options.grid.NV,1);
+    options.stability.alpha=0;
+    options = setupAECD_stg(options);
+    eCD = zeros(options.grid.NV,1);
+
     for j=1:nRuns
+        % dummyVel = rand(options.grid.NV,1);
+        % b = options.discretization.M*dummyVel;
+        % L = options.discretization.M*options.discretization.G;
+        % p = L\b;
+        % dummyVel = dummyVel-options.discretization.G*p;
+    
+        dummyVel = setTGIC(options);
+    
+        
+        [Fsxx,Fsxy,Fsyx,Fsyy] = computeFluxes(dummyVel,options);
+        Fsx = abs([Fsxx; Fsxy]);
+        Fsy = abs([Fsyx; Fsyy]);
         tS=tic; options=diffusiveGersh(options); t1 = t1+toc(tS);
+        tS=tic; options=convectiveGersh(Fsxx,Fsxy,Fsyx,Fsyy,options); t3 = t3+toc(tS);
+        [e1,e2] = accumulateEV(e1,e2,options);
         tS=tic; options=diffusiveAECD(options); t2 = t2+toc(tS);
-        tS=tic; options=convectiveGersh(dummyVel,options); t3 = t3+toc(tS);
         tS=tic; options=convectiveAECD(dummyVel,options); t4 = t4+toc(tS);
+        [e3,e4] = accumulateEV(e3,e4,options);
+        tS=tic; options=convectiveAECD_stg(Fsx,Fsy, options); t5 = t5+toc(tS);
+        [e5, ~] = accumulateEV(e5,e4,options);
+        options = evaluateEV_FOM(dummyVel,options);
+        eCD = options.stability.ev_CD;
+        e6 = e6 + options.stability.eb_C;
+        C = 0.5*options.discretization.M*spdiags(dummyVel,0,length(dummyVel),length(dummyVel))*abs(options.discretization.Tcs);
+        e7 = e7 + max(imag(eig(full(sparse(diag(options.grid.Omp_inv))*C))));
     end
+
+    gers_conv(i) = e1/nRuns;
+    gers_diff(i) = e2/nRuns;
+    AECD_conv(i) = e3/nRuns;
+    AECD_diff(i) = e4/nRuns;
+    AECD_conv_st(i) = e5/nRuns;
+    eb_conv(i) = e6/nRuns;
+    ebC_coll(i) = e7/nRuns;
 
     times_gers_diff(i) = t1/nRuns;
     times_AECD_diff(i) = t2/nRuns;
     times_gers_conv(i) = t3/nRuns;
     times_AECD_conv(i) = t4/nRuns;
+    times_AECD_conv_st(i) = t5/nRuns;
+
+    
+    figure(k)
+    scatter(real(eCD),imag(eCD));  
+    hold on
+    grid on
+    plot(AECD_diff(i)*[0,0],AECD_conv(i)*[-1,1],'-k')
+    plot(gers_diff(i)*[0,0],gers_conv(i)*[-1,1],'-r')
+    plot(AECD_diff(i)*[0,0],AECD_conv_st(i)*[-1,1],'-b')
+    plot(AECD_diff(i)*[-1,-1],AECD_conv(i)*[-1,1],'-k')
+    plot(AECD_diff(i)*[-1,0],AECD_conv(i)*[1,1],'-k')
+    plot(AECD_diff(i)*[-1,0],AECD_conv(i)*[-1,-1],'-k')
+    plot(gers_diff(i)*[-1,-1],gers_conv(i)*[-1,1],'-r')
+    plot(gers_diff(i)*[-1,0],gers_conv(i)*[1,1],'-r')
+    plot(gers_diff(i)*[-1,0],gers_conv(i)*[-1,-1],'-r')
+    plot(AECD_diff(i)*[-1,-1],AECD_conv_st(i)*[-1,1],'-b')
+    plot(AECD_diff(i)*[-1,0],AECD_conv_st(i)*[1,1],'-b')
+    plot(AECD_diff(i)*[-1,0],AECD_conv_st(i)*[-1,-1],'-b')
+    xlabel('Real axis','interpreter','latex')
+    ylabel('Imaginary axis','interpreter','latex')
+    k = k+1;
 end
 
-figure(1)
+figure(k)
 plot(cases,times_AECD_conv*1e3,'-xk','MarkerSize',15);
 hold on
 grid on
+plot(cases,times_AECD_conv_st*1e3,'-dk','MarkerSize',15)
 plot(cases,times_gers_conv*1e3,'-ok','MarkerSize',15);
 plot(cases,times_AECD_diff*1e3,'--xk','MarkerSize',15);
 plot(cases,times_gers_diff*1e3,'--ok','MarkerSize',15);
 xticks(cases);
 xlabel('$N$','Interpreter','latex')
 ylabel('Wall-clock time [ms]','Interpreter','latex')
-legend({'$\rho(C)$, \texttt{AlgEigCD}','$\rho(C)$, Gershgorin', ...
+legend({'$\rho(C)$, col. \texttt{AlgEigCD}',...
+    '$\rho(C)$, stg. \texttt{AlgEigCD}','$\rho(C)$, Gershgorin', ...
     '$\rho(D)$, \texttt{AlgEigCD}', '$\rho(D)$, Gershgorin'},...
     'Interpreter','latex','Location','best')
 
-figure(2)
+figure(k+1)
 plot(cases,times_gers_conv./times_AECD_conv,'-xk','MarkerSize',15);
 hold on
 grid on
@@ -61,3 +143,17 @@ xticks(cases);
 xlabel('$N$','Interpreter','latex')
 ylabel('Speed-up','Interpreter','latex')
 legend({'$\rho(C)$','$\rho(D)$'},'Interpreter','latex','Location','best')
+
+figure(k+2)
+plot(cases,eb_conv,'-xk','MarkerSize',15)
+hold on
+grid on
+plot(cases,ebC_coll,'-^k','MarkerSize',15)
+plot(cases,gers_conv,'-ok','MarkerSize',15)
+plot(cases,AECD_conv,'-sk','MarkerSize',15)
+plot(cases,AECD_conv_st,'-dk','MarkerSize',15)
+xticks(cases);
+xlabel('$N$','Interpreter','latex')
+ylabel('$\rho(C)$','Interpreter','latex')
+legend({'Actual eigenbound','$\frac{1}{2}T_{sc}F_s|T_{cs}|$ eigenbound','Gershgorin','col. \texttt{AlgEigCD}','stg. \texttt{AlgEigCD}'},...
+    'Interpreter','latex','Location','best')

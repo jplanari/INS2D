@@ -52,8 +52,8 @@ if(options.stability.ev_plot==1 && n>options.stability.ev_n)
     ev_CD = options.stability.ev_CD*dt;
     eb_C = options.stability.eb_C*dt;
     eb_D = options.stability.eb_D*dt;
-    eb_g_C = options.stability.gersh.eb_C*dt;
-    eb_g_D = options.stability.gersh.eb_D*dt;
+    eb_g_C = options.stability.bounds.eb_C*dt;
+    eb_g_D = options.stability.bounds.eb_D*dt;
 
     scatter(real(ev_C),imag(ev_C),'filled')
     grid on

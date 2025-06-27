@@ -1,0 +1,20 @@
+%function [options] = convectiveAECD_stg(V, options)
+function [options] = convectiveAECD_stg(Fsx,Fsy, options)
+
+    AECDu = options.stability.AECDu;
+    AECDv = options.stability.AECDv;
+    % AECD = options.stability.AECD_s;
+    alpha = options.stability.alpha;
+     
+
+    % F = [Fsx; Fsy];
+
+    ebu = 0.5*max(Fsx.^alpha.*AECDu*Fsx.^(1-alpha));
+    ebv = 0.5*max(Fsy.^alpha.*AECDv*Fsy.^(1-alpha));
+
+    % eb = 0.5*max(F.^alpha.*AECD*F.^(1-alpha));
+
+    options.stability.bounds.eb_C = max([ebu,ebv]);
+    % options.stability.bounds.eb_C = eb;
+ end
+

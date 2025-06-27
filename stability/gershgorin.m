@@ -1,4 +1,4 @@
-function bound = gershgorin(M)
-  absM = abs(M);
-  bound = max(sum(absM,2));
+function bound = gershgorin(A)
+      absM = abs(A);
+      bound = max(sum(absM,2));
 end

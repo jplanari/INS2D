@@ -18,7 +18,7 @@
     y1      = -2;
     y2      = 2;
 
-    Nx      = 200;                  % number of volumes in the x-direction
+    Nx      = 150;                  % number of volumes in the x-direction
     Ny      = 80;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
@@ -46,21 +46,21 @@
 %%% reduced order model
 
     rom    = 1;      % set to 1 to use ROM solver
-    M      = 20;     % number of modes used
-    Mp     = 1;
+    M      = 128;     % number of modes used
+    Mp     = M;
     % the full snapshotdataset can be reduced by taking as index
     % 1:Nskip:Nsnapshots
-    t_sample  = 4*pi;  % part of snapshot matrix used for building SVD
+    t_sample  = 8*pi;  % part of snapshot matrix used for building SVD
     dt_sample = 4*pi/200; % frequency of snapshots to be used for SVD
     
-    precompute_convection = 0;
-    precompute_diffusion  = 0;
+    precompute_convection = 1;
+    precompute_diffusion  = 1;
     precompute_force      = 0;
-    pressure_recovery     = 1;
+    pressure_recovery     = 0;
     pressure_precompute   = 0;
     process_iteration_FOM = 1; % execute the process_iteration script each time step (requires FOM evaluation)     
     weighted_norm         = 1;    
-    basis_type            = 0; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
+    basis_type            = 3; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
     mom_cons              = 0; 
     
     rom_bc = 2; % 0: homogeneous (no-slip, periodic); 
@@ -68,7 +68,7 @@
                 % 2: non-homogeneous, time-dependent   
     
     
-    snapshot_data = 'results/actuator_unsteadyBC_ROM_rerunNov2022/matlab_data.mat';
+    snapshot_data = 'results/actuator_unsteady_1.000e+02_150x80_2/matlab_data.mat';
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -88,7 +88,7 @@
     dt            = 4*pi/200;      % time step (for explicit methods it can be
                                % determined during running with dynamic_dt)
     t_start       = 0;         % start time
-    t_end         = 4*pi;        % end time
+    t_end         = 8*pi;        % end time
 
     CFL           = 1;              
     timestep.set  = 0;         % time step determined in timestep.m, 
@@ -102,7 +102,7 @@
     % method 20 : generic explicit RK, can also be used for ROM
     % method 21 : generic implicit RK, can also be used for ROM    
     method        = 20;
-    RK            = 'RK44P2';
+    RK            = 'RK44';
 
     % for methods that are not self-starting, e.g. AB-CN or one-leg
     % beta, we need a startup method.

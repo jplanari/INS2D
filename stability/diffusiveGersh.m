@@ -16,5 +16,5 @@ function options = diffusiveGersh(options)
     otherwise
       error('other diffusive methods than laminar not implemented.')
   end
-  options.stability.gersh.eb_D = eb;
+  options.stability.bounds.eb_D = eb;
 end

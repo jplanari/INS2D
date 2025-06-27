@@ -3,14 +3,21 @@ function [options] = setupAECD(options)
 G = options.discretization.G;
 Tcs = G./abs(G);
 Tcs(isnan(Tcs))=0;
-Tsc = Tcs';
 
-%Collocated grid volume inverse
+%Collocated grid volume inverse, Identity for ROM
 Np = options.grid.Np;
+
 if(options.rom.rom==1)
-    Oinv = speye
-Omp_inv = options.grid.Omp_inv;
-Oinv = spdiags(Omp_inv,0,Np,Np);
+    B = options.rom.B;
+    Oinv = speye(Np);
+    Tcs = B'*Tcs;
+
+else
+    Omp_inv = options.grid.Omp_inv;
+    Oinv = spdiags(Omp_inv,0,Np,Np);
+end
+
+Tsc = Tcs';
 
 %Vector of areas
 hxi = options.grid.hxi;
@@ -23,10 +30,6 @@ Ds = [repmat(hxi(:), Nux_in, 1); repmat(hyi(:), Nvy_in, 1)];
 
 %Relevant matrix
 AECD = abs(Tcs*Oinv*Tsc);
-
-
-
-
 
 %Assign to options struct
 options.discretization.Tsc = Tsc;

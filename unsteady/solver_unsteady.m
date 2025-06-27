@@ -60,7 +60,10 @@ if (method == 62 || method == 92 || method==142 || method==172 || method==182 ||
 end
 
 if(options.stability.gershgorin == 1)
-    options = setupAECD(options);
+    % options = setupAECD(options);
+    options = setupAECD_stg(options);
+    options.stability.alpha=1.0;
+    options = diffusiveAECD_stg(options);
     if(options.stability.stab_region == 1)
         options = stabilityRegion_ERK(options);
     end
@@ -75,8 +78,11 @@ method_temp = method;
 
 %% start time stepping
 time_start = toc
+dts = zeros(nt,1);
+ebc = zeros(nt,1);
+ebd = zeros(nt,1);
 
-while(n<=nt)
+while(n<=nt && t<t_end)
     
     % time step counter
     n = n+1;
@@ -121,13 +127,19 @@ while(n<=nt)
         if (rem(n,options.stability.ev_n) == 0)
             fprintf('Computing eigenvalues...\n')
             options = evaluateEV_FOM(V,options);
+
         end
     end
 
     if(options.stability.gershgorin == 1)
         [dt,options] = set_timestep_stab(V,options);
+        dts(n) = dt;
+        ebd(n) = options.stability.bounds.eb_D;
+        ebc(n) = options.stability.bounds.eb_C;
+        fprintf('dt=%e\n',dt);
         if(options.stability.display_ebs == 1)
-            display(options.stability.AlgEigCD)
+            display(options.stability.bounds)
+            
         end
     end
 

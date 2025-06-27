@@ -3,20 +3,15 @@ Npx = options.grid.Npx;
 Npy = options.grid.Npy;
 
 %% kinetic energy
-figure
-% plot(time,(k-k(1))/k(1),'s-')
-% grid
-cd ../..
-% open('results/shear_layer_ROM/energy_error_ROM_inviscid_momcons.fig');
-if (options.rom.rom == 1 )
-    k0 = snapshots.k(1);
-else
-    k0 = k(1);
-end
-% hold on
-semilogy(time,abs(k-k0)/k0,'s--')
-title('energy error');
-% saveas(gcf,'results/shear_layer_ROM/energy_error_ROM_inviscid_momcons.fig');
+ken_hdl.kdecay = (k(1:n-1)-k(1))/k(1);
+ken_hdl.t = time(1:n-1);
+
+figure(1)
+plot(ken_hdl.t,ken_hdl.kdecay)
+grid on
+hold on
+xlabel('$t$','interpreter','latex');
+ylabel('$(k(t)-k(0))/k(0)$','interpreter','latex');
 
 
 %% momentum
@@ -45,5 +40,5 @@ omega = reshape(omega,Npx+1,Npy+1);
 labels= 20;
 contour(x,y,omega',labels);
 axis square
-colorbar
+% colorbar
 grid

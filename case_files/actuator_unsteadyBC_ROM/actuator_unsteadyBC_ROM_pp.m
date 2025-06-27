@@ -112,10 +112,10 @@ set(gca,'LineWidth',1)
 
 %% kinetic energy
 figure
-plot(0:dt:t_end,k/k(1));
+plot(time(1:n),k(1:n)/k(1));
 title('normalised kinetic energy')
 
 %% divergence of velocity field
 figure
-semilogy(0:dt:t_end,maxdiv);
+semilogy(time(1:n),maxdiv(1:n));
 title('divergence of velocity field')

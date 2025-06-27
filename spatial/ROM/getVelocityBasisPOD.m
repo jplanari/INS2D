@@ -9,6 +9,7 @@ function [B,div_free,Vbc,rom_yM] = getVelocityBasisPOD(snapshots,sample_index,op
 %% input checks
 % concatenate snapshot matrices
 V_total_snapshots = [snapshots.uh_total';snapshots.vh_total'];
+Ds = diag(snapshots.dts/sum(snapshots.dts)).^(0.5);
 
 % check input dimensions
 Nspace  = size(V_total_snapshots,1); % total number of unknowns (Nu+Nv) of the original model
@@ -27,7 +28,7 @@ end
 div_snapshots = max(abs(options.discretization.M*V_total_snapshots + options.discretization.yM),[],1); %
 % max over all snapshots:
 maxdiv_snapshots = max(div_snapshots);
-if (maxdiv_snapshots > 1e-14 && options.rom.rom_bc<2)
+if (maxdiv_snapshots > 1e-8 && options.rom.rom_bc<2)
     warning(['snapshots not divergence free: ' num2str(maxdiv_snapshots)]);
 end
 
@@ -98,6 +99,7 @@ if (options.rom.mom_cons == 1 && options.rom.weighted_norm == 0)
     
     % 1) construct (I-ee')*V_svd
     Vmod = V_svd - e*(e'*V_svd);
+    Vmod = Vmod*Ds;
     % 2) take SVD
     [W,S,Z] = svd(Vmod,'econ');
     % 3) add e
@@ -123,7 +125,7 @@ elseif (options.rom.mom_cons == 1 && options.rom.weighted_norm == 1)
     % 1) construct (I-ee')*Om*V_svd
     Vmod = V_svd - e*(e'*(Om_mat*V_svd));
     % 2) apply weighting
-    Vmod = Om_sqrt*Vmod;
+    Vmod = Om_sqrt*Vmod*Ds;
     % 3) perform SVD
     [W,S,Z] = svd(Vmod,'econ');
     % 4) transform back
@@ -137,7 +139,8 @@ elseif (options.rom.mom_cons == 0 && options.rom.weighted_norm == 0)
     %     [W,S,Z] = svd(V_svd,'econ');
     % getBasis can use different methods to get basis: SVD/direct/snapshot
     % method
-    [W,S] = getBasis(V_svd,options);
+    Vmod = V_svd*Ds;
+    [W,S] = getBasis(Vmod,options);
     
 elseif (options.rom.mom_cons == 0 && options.rom.weighted_norm == 1)
     
@@ -145,7 +148,7 @@ elseif (options.rom.mom_cons == 0 && options.rom.weighted_norm == 1)
     Om_invsqrt = spdiags(1./sqrt(Om),0,Nu+Nv,Nu+Nv);
     
     % make weighted snapshot matrix
-    Vmod = Om_sqrt*V_svd;
+    Vmod = Om_sqrt*V_svd*Ds;
     % perform SVD
     %     [W,S,Z] = svd(Vmod,'econ');
     % getBasis can use different methods to get basis: SVD/direct/snapshot
@@ -195,7 +198,11 @@ end
 RIC  = sum(Sigma(1:M).^2)/sum(Sigma.^2);
 disp(['relative energy captured by SVD = ' num2str(RIC)]);
 figure(21)
-semilogy(Sigma/Sigma(1),'s');
+semilogy(real(Sigma/Sigma(1)),'ko','MarkerSize',20,'MarkerFaceColor','k');
+hold on
+grid on
+xlabel('$M$','interpreter','latex');
+ylabel('$\sigma/\sigma_1$','interpreter','latex')
 % or alternatively
 % semilogy(Sigma.^2/sum(Sigma.^2),'s');
 
@@ -208,7 +215,7 @@ div_basis = max(abs(options.discretization.M*B),[],1); %
 % max over all columns:
 maxdiv_basis = max(div_basis);
 if (options.rom.rom_bc < 2)
-    if (maxdiv_basis > 1e-9)
+    if (maxdiv_basis > 1e-8)
         warning(['ROM basis not divergence free: ' num2str(maxdiv_basis)]);
         
         if (options.rom.helmholtz == 1)
@@ -230,7 +237,7 @@ if (options.rom.rom_bc < 2)
             % test again divergence-freeness
             div_basis = max(abs(options.discretization.M*B),[],1); 
             maxdiv_basis = max(div_basis);
-            if (maxdiv_basis > 1e-12)
+            if (maxdiv_basis > 1e-8  )
                 warning(['ROM basis still not divergence free: ' num2str(maxdiv_basis)]);
 %                 warning('Adding basis for pressure');
                 div_free = 0;

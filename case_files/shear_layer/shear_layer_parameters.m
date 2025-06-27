@@ -3,7 +3,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% flow properties
-    Re      = 1e5;                  % Reynolds number
+    Re      = 1e3;                  % Reynolds number
     visc    = 'laminar';              % laminar or turbulent; 
                                       % influences stress tensor
     nu      = 1/Re;
@@ -18,8 +18,8 @@
     y1      = 0;
     y2      = 2*pi;
 
-    Nx      = 200;          % number of volumes in the x-direction
-    Ny      = 200;          % number of volumes in the y-direction
+    Nx      = 70;          % number of volumes in the x-direction
+    Ny      = 70;          % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
     sy      = 1;
@@ -73,10 +73,10 @@
     order4  = 0;
 
     % only for unsteady problems:
-    dt            = 0.01;       % time step (for explicit methods it can be
+    dt            = 0.05;       % time step (for explicit methods it can be
                                % determined during running with dynamic_dt)
     t_start       = 0;        % start time
-    t_end         = 10;         % end time
+    t_end         = 60;         % end time
 
     CFL           = 1;              
     timestep.set  = 0;         % time step determined in timestep.m, 
@@ -111,6 +111,15 @@
 %             alfa2   = -1/2;
     % one-leg beta (method 5):
 %             beta    = 0.5; % in fact, this should be Reynolds dependent
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% stability settings, for unsteady solver
+    ev_compute      = 0;
+    gershgorin      = 1;
+    stab_region     = 0;
+    display_ebs     = 0;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -162,9 +171,9 @@
     tecplot.write    = 0;          % write to tecplot file
     tecplot.n        = 1;          % write tecplot files every n timesteps
     
-    rtp.show         = 1;          % real time plotting 
+    rtp.show         = 0;          % real time plotting 
     rtp.n            = 2;
-    rtp.movie        = 1;          % make movie based on the real time plots
+    rtp.movie        = 0;          % make movie based on the real time plots
     rtp.moviename    = 'viscous_shear_layer_Re100_N200_FOM'; % movie name
     rtp.movierate    = 15;         % frame rate (/s); note one frame is taken every rtp.n timesteps
     

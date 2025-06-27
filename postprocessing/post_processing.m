@@ -13,150 +13,150 @@ else
     
 end
 
-%% additional Reduced-Order Model postprocessing
-if (options.rom.rom == 1 && strcmp(options.rom.rom_type,'POD'))
-    % check if ROM simulation dt is same as FOM dt, or an integer multiple of
-    % it
-    if (rem(dt,dt_snapshots) == 0)
-        skip = dt/dt_snapshots;
-        % final time should be smaller than FOM time
-        if (t_end<=snapshots.t_end)
-            snapshot_end = ceil(t_end/dt_snapshots);
-            snapshot_indx = 1:skip:(snapshot_end+1);
-            t_vec = t_start:dt:t_end;
-            
-            % if velocity fields have been stored, we can compute errors
-            if (options.rom.process_iteration_FOM==1)
-                
-                if (options.output.save_unsteady == 1)
-                    % we have the velocity fields, so we can compute error wrt
-                    % FOM
-                    % uh_total is of size Nt*Nu, V_total size (Nu+Nv)*Nt
-                    V_total = [uh_total vh_total]';
-                    snapshots_V_total = [snapshots.uh_total(snapshot_indx,:) snapshots.vh_total(snapshot_indx,:)]';
-                    error_V = V_total - snapshots_V_total;
-
-                    % inf-norm
-                    error_V_inf = max(abs(error_V),[],1);
-                    
-                    % 2-norm of error
-                    % note that 2-norm of velocity-field is simply sqrt(2*k),
-                    % with k the kinetic energy = 0.5*V'*Om*V
-                    % NOTE! the (finite volume)-weighted 2-norm is consistent with the
-                    % Frobenius norm of the optimization problem as solved
-                    % by the SVD                    
-%                     Om_total = sum(sum(options.grid.Om));
-                    
-                    % choose reference velocity field (can be time
-                    % dependent)
-                    % V_ref = 1:
-                    V_ref    = ones(size(snapshots_V_total));
-                    % V_ref = snapshots:
-%                     V_ref    = snapshots_V_total;
-                    
-                    V_2_ref  = weightedL2norm(V_ref,options.grid.Om); 
-                    error_V_2 = weightedL2norm(error_V,options.grid.Om)./V_2_ref;
-                    
-                    
-                    % best possible approximation given the projection:
-                    % note that the norm should be consistent with the
-                    % optimization problem used in the SVD
-                    V_best = getFOM_velocity(getROM_velocity(snapshots_V_total,0,options),0,options);
-                    error_V_best = V_best - snapshots_V_total;
-                    error_V_best_2 = weightedL2norm(error_V_best,options.grid.Om)./V_2_ref;
-                    
-                    figure(101)
-%                     plot(t_vec,error_V_inf);
+% %% additional Reduced-Order Model postprocessing
+% if (options.rom.rom == 1 && strcmp(options.rom.rom_type,'POD'))
+%     % check if ROM simulation dt is same as FOM dt, or an integer multiple of
+%     % it
+%     if (rem(dt,dt_snapshots) == 0)
+%         skip = dt/dt_snapshots;
+%         % final time should be smaller than FOM time
+%         if (t_end<=snapshots.t_end)
+%             snapshot_end = ceil(t_end/dt_snapshots);
+%             snapshot_indx = 1:skip:(snapshot_end+1);
+%             t_vec = t_start:dt:t_end;
+% 
+%             % if velocity fields have been stored, we can compute errors
+%             if (options.rom.process_iteration_FOM==1)
+% 
+%                 if (options.output.save_unsteady == 1)
+%                     % we have the velocity fields, so we can compute error wrt
+%                     % FOM
+%                     % uh_total is of size Nt*Nu, V_total size (Nu+Nv)*Nt
+%                     V_total = [uh_total vh_total]';
+%                     snapshots_V_total = [snapshots.uh_total(snapshot_indx,:) snapshots.vh_total(snapshot_indx,:)]';
+%                     error_V = V_total - snapshots_V_total;
+% 
+%                     % inf-norm
+%                     error_V_inf = max(abs(error_V),[],1);
+% 
+%                     % 2-norm of error
+%                     % note that 2-norm of velocity-field is simply sqrt(2*k),
+%                     % with k the kinetic energy = 0.5*V'*Om*V
+%                     % NOTE! the (finite volume)-weighted 2-norm is consistent with the
+%                     % Frobenius norm of the optimization problem as solved
+%                     % by the SVD                    
+% %                     Om_total = sum(sum(options.grid.Om));
+% 
+%                     % choose reference velocity field (can be time
+%                     % dependent)
+%                     % V_ref = 1:
+%                     V_ref    = ones(size(snapshots_V_total));
+%                     % V_ref = snapshots:
+% %                     V_ref    = snapshots_V_total;
+% 
+%                     V_2_ref  = weightedL2norm(V_ref,options.grid.Om); 
+%                     error_V_2 = weightedL2norm(error_V,options.grid.Om)./V_2_ref;
+% 
+% 
+%                     % best possible approximation given the projection:
+%                     % note that the norm should be consistent with the
+%                     % optimization problem used in the SVD
+%                     V_best = getFOM_velocity(getROM_velocity(snapshots_V_total,0,options),0,options);
+%                     error_V_best = V_best - snapshots_V_total;
+%                     error_V_best_2 = weightedL2norm(error_V_best,options.grid.Om)./V_2_ref;
+% 
+%                     figure(101)
+% %                     plot(t_vec,error_V_inf);
+% %                     hold on
+%                     % skip i=1, as error_v_2_norm is zero for i=1
+%                     plot(t_vec,error_V_2); %(2:end)./error_V_2_norm(2:end));                    
 %                     hold on
-                    % skip i=1, as error_v_2_norm is zero for i=1
-                    plot(t_vec,error_V_2); %(2:end)./error_V_2_norm(2:end));                    
-                    hold on
-                    plot(t_vec,error_V_best_2);
-                    set(gca,'Yscale','log');
-                    legend('L_2 error in ROM velocity','Best approximation (projection FOM)')
-%                     legend('L_{inf} error in ROM velocity','L_2 error in ROM velocity','Best approximation (projection FOM)')
-
-                    
-                    if (options.rom.pressure_recovery == 1)
-                        % correct spatial mean of both to be zero
-                        % p_total is of size Nt*Np, change to Np*Nt
-                        p_total = p_total';
-                        mean_ROM = mean(p_total,1);
-                        snapshots_p_total = snapshots.p_total(snapshot_indx,:)';
-                        mean_FOM = mean(snapshots_p_total,1);
-                        
-                        error_p = (p_total - mean_ROM) - (snapshots_p_total - mean_FOM);
-
-                        % inf-norm
-                        error_p_inf = max(abs(error_p),[],1);
-                        
-                        % 2-norm of error    
-                        % choose reference pressure field (can be time
-                        % dependent)                        
-                        p_ref     = 0.25*ones(size(snapshots_p_total));
-                        % p_ref = snapshots:
-%                         p_ref    = snapshots_p_total - mean_FOM;
-
-                        p_2_ref   = weightedL2norm(p_ref,options.grid.Omp); 
-                        error_p_2 = weightedL2norm(error_p,options.grid.Omp)./p_2_ref;
-
-                        % best possible approximation given the projection:                        
-                        p_best = getFOM_pressure(getROM_pressure(snapshots_p_total,0,options),0,options);
-                        mean_ROM_best = mean(p_best,1);
-                        
-                        error_p_best = (p_best - mean_ROM_best) - (snapshots_p_total - mean_FOM);
-                        error_p_best_2 = weightedL2norm(error_p_best,options.grid.Omp)./p_2_ref;
-                        
-                        figure(102)
-                        plot(t_vec,error_p_2);
-                        hold on
-%                         plot(t_vec,error_p_inf);
-                        plot(t_vec,error_p_best_2);
-                        set(gca,'Yscale','log');
-                        legend('L_{2} error in ROM pressure','Projection FOM pressure')
-
-                    end
-                    
-
-                end
-                
-                
-                figure(103)
-%                 semilogy(t_vec,abs(k - snapshots.k(snapshot_indx))/snapshots.k(1));
-%                 semilogy(t_vec,abs(k - snapshots.k(1))/snapshots.k(1));
-                semilogy(t_vec,abs(k-k(1))/k(1));
-                hold on
-%                 set(gca,'Yscale','log')
-                ylabel('energy error');
-
-%                 legend('(K_{ROM}(t)-K_{FOM}(t))/K_{FOM}(0)','(K_{ROM}(t)-K_{FOM}(0))/K_{FOM}(0)','(K_{ROM}(t)-K_{ROM}(0))/K_{ROM}(0)')
-%                 title('error in kinetic energy ROM');
-                
-                figure(104)
-%                 umom0 = snapshots.umom(1);
-                umom0 = umom(1);
-                semilogy(t_vec,abs(umom-umom0)/umom0)
-                hold on
-                ylabel('momentum error');
-                
-                figure(105)
-                semilogy(t_vec,maxdiv);
-                hold on
-                semilogy(t_vec,snapshots.maxdiv(snapshot_indx));
-                xlabel('t')
-                ylabel('maximum divergence of velocity field');
-                grid
-                
-                
-            end
-            %         hold on
-            %         plot(t_start:dt:t_end,error_v);
-            %         legend('error in u','error in v');
-            
-        end
-    end
-    
-end
+%                     plot(t_vec,error_V_best_2);
+%                     set(gca,'Yscale','log');
+%                     legend('L_2 error in ROM velocity','Best approximation (projection FOM)')
+% %                     legend('L_{inf} error in ROM velocity','L_2 error in ROM velocity','Best approximation (projection FOM)')
+% 
+% 
+%                     if (options.rom.pressure_recovery == 1)
+%                         % correct spatial mean of both to be zero
+%                         % p_total is of size Nt*Np, change to Np*Nt
+%                         p_total = p_total';
+%                         mean_ROM = mean(p_total,1);
+%                         snapshots_p_total = snapshots.p_total(snapshot_indx,:)';
+%                         mean_FOM = mean(snapshots_p_total,1);
+% 
+%                         error_p = (p_total - mean_ROM) - (snapshots_p_total - mean_FOM);
+% 
+%                         % inf-norm
+%                         error_p_inf = max(abs(error_p),[],1);
+% 
+%                         % 2-norm of error    
+%                         % choose reference pressure field (can be time
+%                         % dependent)                        
+%                         p_ref     = 0.25*ones(size(snapshots_p_total));
+%                         % p_ref = snapshots:
+% %                         p_ref    = snapshots_p_total - mean_FOM;
+% 
+%                         p_2_ref   = weightedL2norm(p_ref,options.grid.Omp); 
+%                         error_p_2 = weightedL2norm(error_p,options.grid.Omp)./p_2_ref;
+% 
+%                         % best possible approximation given the projection:                        
+%                         p_best = getFOM_pressure(getROM_pressure(snapshots_p_total,0,options),0,options);
+%                         mean_ROM_best = mean(p_best,1);
+% 
+%                         error_p_best = (p_best - mean_ROM_best) - (snapshots_p_total - mean_FOM);
+%                         error_p_best_2 = weightedL2norm(error_p_best,options.grid.Omp)./p_2_ref;
+% 
+%                         figure(102)
+%                         plot(t_vec,error_p_2);
+%                         hold on
+% %                         plot(t_vec,error_p_inf);
+%                         plot(t_vec,error_p_best_2);
+%                         set(gca,'Yscale','log');
+%                         legend('L_{2} error in ROM pressure','Projection FOM pressure')
+% 
+%                     end
+% 
+% 
+%                 end
+% 
+% 
+%                 figure(103)
+% %                 semilogy(t_vec,abs(k - snapshots.k(snapshot_indx))/snapshots.k(1));
+% %                 semilogy(t_vec,abs(k - snapshots.k(1))/snapshots.k(1));
+%                 semilogy(t_vec,abs(k-k(1))/k(1));
+%                 hold on
+% %                 set(gca,'Yscale','log')
+%                 ylabel('energy error');
+% 
+% %                 legend('(K_{ROM}(t)-K_{FOM}(t))/K_{FOM}(0)','(K_{ROM}(t)-K_{FOM}(0))/K_{FOM}(0)','(K_{ROM}(t)-K_{ROM}(0))/K_{ROM}(0)')
+% %                 title('error in kinetic energy ROM');
+% 
+%                 figure(104)
+% %                 umom0 = snapshots.umom(1);
+%                 umom0 = umom(1);
+%                 semilogy(t_vec,abs(umom-umom0)/umom0)
+%                 hold on
+%                 ylabel('momentum error');
+% 
+%                 figure(105)
+%                 semilogy(t_vec,maxdiv);
+%                 hold on
+%                 semilogy(t_vec,snapshots.maxdiv(snapshot_indx));
+%                 xlabel('t')
+%                 ylabel('maximum divergence of velocity field');
+%                 grid
+% 
+% 
+%             end
+%             %         hold on
+%             %         plot(t_start:dt:t_end,error_v);
+%             %         legend('error in u','error in v');
+% 
+%         end
+%     end
+% 
+% end
 
 %% standard plots
 % velocity;

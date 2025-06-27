@@ -103,7 +103,7 @@ end
 
 if (abs(sum(hy(yrange))-D)>1e-10)
     disp('total forcing not consistent, maybe the grid spacing cannot match the diameter');
-    keyboard
+    % keyboard
 end
 
 % Fx = Fx*(1+0.2*cos(t));

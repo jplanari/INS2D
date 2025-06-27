@@ -12,6 +12,6 @@ function [options] = diffusiveAECD(options)
 
     eb = max(AECD*vec);
 
-    options.stability.AlgEigCD.eb_D = eb;
+    options.stability.bounds.eb_D = eb;
 end
 

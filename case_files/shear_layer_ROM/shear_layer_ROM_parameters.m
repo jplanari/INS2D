@@ -2,14 +2,15 @@
 % project = 'shear_layer_ROM';   % project name used in filenames
 run_multiple = 1;
 %M_list = [6 4 8 16 2 4 8 16];
-M_list = 4;
+M_list = [16, 32, 64, 128, 256, 300];
+% M_list = 400;
 % M_list = [16 16 16];
 % M_list = [2 2  4 4 8 8 16 16 32 32]; % 5 10 15 20 ];
 mesh_list = ones(length(M_list),1);
-method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
+method_list = {'RK44'};
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% flow properties
-    Re      = 1e5;                  % Reynolds number
+    Re      = 1e3;                  % Reynolds number
     visc    = 'laminar';              % laminar or turbulent; 
                                       % influences stress tensor
     nu      = 1/Re;
@@ -24,8 +25,8 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     y1      = 0;
     y2      = 2*pi;
 
-    Nx      = 200;                   % number of volumes in the x-direction
-    Ny      = 200;                   % number of volumes in the y-direction
+    Nx      = 70;                   % number of volumes in the x-direction
+    Ny      = 70;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
     sy      = 1;
@@ -54,8 +55,8 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     M      = M_list(j);     % number of modes used
     Mp     = M;     % number of pressure modes used (only needed if pressure_recovery=1)
 
-    t_sample  = 1;  % part of snapshot matrix used for building SVD
-    dt_sample = 0.01; % frequency of snapshots to be used for SVD
+    t_sample  = 30;  % part of snapshot matrix used for building SVD
+    dt_sample = 0.05; % frequency of snapshots to be used for SVD
 
     precompute_convection = 1;
     precompute_diffusion  = 1;
@@ -64,7 +65,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     pressure_precompute   = 0;
     process_iteration_FOM = 1; % execute the process_iteration script each time step (requires FOM evaluation)     
     weighted_norm         = 1;    
-    basis_type            = 3; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
+    basis_type            = 0; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
     mom_cons              = 0; %j>4;
     
     rom_bc = 0; % 0: homogeneous (no-slip, periodic); 
@@ -74,7 +75,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     % 40x40:
 %     snapshot_data = 'results/shear_layer01/matlab_data.mat';
     % 200x200:
-    snapshot_data = 'results/shear_layer_1.000e+05_200x200_0/matlab_data.mat';
+    snapshot_data = 'results/shear_layer_1.000e+03_70x70_18/matlab_data.mat';
     % 200x200, with RK4 until t=7
 %     snapshot_data = 'results/shear_layer_ROM_1.000e+100_200x200/matlab_data.mat';
     
@@ -119,8 +120,8 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
         % method 5 : explicit one leg beta; 2nd order
         % method 20 : generic explicit RK, can also be used for ROM
         % method 21 : generic implicit RK, can also be used for ROM            
-        method            = 21-(j>4);
-        RK                = method_list{j}; %'RK44';
+        method            = 20;
+        RK                = 'RK44'; %'RK44';
 
         % for methods that are not self-starting, e.g. AB-CN or one-leg
         % beta, we need a startup method.
@@ -146,7 +147,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
 %%% solver settings
 
     % pressure
-    poisson          = 1; % 1: direct solver, 
+    poisson          = 4; % 1: direct solver, 
                           % 2: CG with ILU (matlab), 
                           % 3: CG mexfile, 
                           % 4: CG with IC, own Matlab impl.
@@ -189,7 +190,7 @@ method_list = {'GL1','GL1','GL1','GL1','RK44','RK44','RK44','RK44'};
     tecplot.write    = 0;          % write to tecplot file
     tecplot.n        = 1;          % write tecplot files every n timesteps
     
-    rtp.show         = 1;          % real time plotting 
+    rtp.show         = 0;          % real time plotting 
     rtp.n            = 10;
     rtp.movie        = 0;          % make movie based on the real time plots
     rtp.moviename    = 'inviscid_shear_layer_ROM_GL1'; % movie name

@@ -25,7 +25,7 @@ end
 
 % clc;
 % clear vars;
-close all;
+% close all;
 format compact;
 format long;
  
@@ -278,6 +278,10 @@ for j=1:Nsim
     
     % save all data to a matlab file
     if (save_file == 1)
+        dts = dts(1:n);
+        uh_total = uh_total(1:n,:);
+        vh_total = vh_total(1:n,:);
+        p_total = p_total(1:n,:);
         fprintf(fcw,'saving results to Matlab file...\n');
         save(file_mat);
     end

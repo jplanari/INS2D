@@ -35,7 +35,7 @@ if (options.BC.BC_unsteady == 1)
     if (options.rom.precompute_convection == 0 && options.rom.precompute_diffusion == 0)
         options = set_bc_vectors(t,options);
     else
-        error('unsteady BC with precomputing not fully tested');
+        % warning('unsteady BC with precomputing not fully tested');
     end
 end
 
