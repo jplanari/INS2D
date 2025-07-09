@@ -18,7 +18,7 @@
     y1      = -2;
     y2      = 2;
 
-    Nx      = 200;                  % number of volumes in the x-direction
+    Nx      = 150;                  % number of volumes in the x-direction
     Ny      = 80;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
@@ -55,9 +55,9 @@
     
     precompute_convection = 1;
     precompute_diffusion  = 1;
-    precompute_force      = 1;
+    precompute_force      = 0;
     pressure_recovery     = 0;
-    pressure_precompute   = 1;
+    pressure_precompute   = 0;
     process_iteration_FOM = 1; % execute the process_iteration script each time step (requires FOM evaluation)     
     weighted_norm         = 1;    
     basis_type            = 3; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
@@ -68,8 +68,8 @@
                 % 2: non-homogeneous, time-dependent   
     
     
-    snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80_3/matlab_data.mat';
-    
+    % snapshot_data = 'results/actuator_unsteady_1.000e+02_150x80_2/matlab_data.mat';
+    snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80/matlab_data.mat';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -163,7 +163,7 @@
                                    
 
     % for unsteady problems only:
-    nonlinear_startingvalues = 1;  % extrapolate values from last time step to get accurate initial guess
+    nonlinear_startingvalues = 0;  % extrapolate values from last time step to get accurate initial guess
                                    
     % location of PETSc-matlab mex files                                    
     petsc_mex        ='~/Software/petsc-3.1-p5/bin/matlab/';
@@ -177,8 +177,8 @@
     tecplot.write    = 0;          % write to tecplot file
     tecplot.n        = 1;         % write tecplot files every n
     
-    rtp.show         = 1;          % 1: real time plotting 
-    rtp.n            = 1;
+    rtp.show         = 0;          % 1: real time plotting 
+    rtp.n            = 10;
     rtp.movie        = 0;
     rtp.moviename    = 'actuator_unsteady_Re100'; % movie name
     rtp.movierate    = 15;         % frame rate (/s); note one frame is taken every rtp.n timesteps

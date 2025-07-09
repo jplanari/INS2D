@@ -60,11 +60,26 @@ elseif (options.rom.rom_bc == 0)
 elseif (options.rom.rom_bc == 2)
     % for rom_bc=2, we have time-dep BC and an alternative
     % method is used that uses a pressure basis
-    Vbc = zeros(Nu+Nv,1);
-    % store yM = -M*V
-    rom_yM = -options.discretization.M*V_total_snapshots;
-    if (options.rom.Mp > rank(rom_yM))
-        warning('Number of pressure modes larger than rank of divergence of snapshot matrix');
+    % comment by Henrik: only if pressure_recovery = 1, otherwise use
+    % lifting function
+    if options.rom.pressure_recovery == 1
+        Vbc = zeros(Nu+Nv,1);
+        % store yM = -M*V
+        rom_yM = -options.discretization.M*V_total_snapshots;
+        if (options.rom.Mp > rank(rom_yM))
+            warning('Number of pressure modes larger than rank of divergence of snapshot matrix');
+        end
+    else
+        % compute V_inhom for each snapshot such that resulting snapshots
+        % V_hom = V - V_inhom satisfies M_h V_hom = 0
+        for i = size(V_total_snapshots,2)
+            V = V_total_snapshots(:,i);
+            yM = -options.discretization.M*V;
+            f       = yM;
+            dp      = pressure_poisson(f,options.time.t_start,options);
+            V_inhom = - Om_inv.*(options.discretization.G*dp);
+            V_total_snapshots(:,i) = V - V_inhom;
+        end
     end
 end
 
