@@ -3,12 +3,12 @@ function [dt,options] = set_timestep_stab(V,options)
     %% Estimate eigenbounds with AlgEigCD. Requires options=setupAECD(options) before the time loop.
 
     [Fsxx,Fsxy,Fsyx,Fsyy] = computeFluxes(V,options);
-    Fsx = abs([Fsxx; Fsxy]);
-    Fsy = abs([Fsyx; Fsyy]);
-    options = convectiveAECD_stg(Fsx,Fsy,options);
+    % Fsx = abs([Fsxx; Fsxy]);
+    % Fsy = abs([Fsyx; Fsyy]);
+    % options = convectiveAECD_stg(Fsx,Fsy,options);
 
-    % options = diffusiveGersh(options);
-    % options = convectiveGersh(V,options);
+    options = diffusiveGersh(options);
+    options = convectiveGersh(Fsxx,Fsxy,Fsyx,Fsyy,options);
 
     [~,b,~,~] = getRKmethod(options.time.RK);
     s = length(b);
