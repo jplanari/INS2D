@@ -9,8 +9,8 @@ function [B,div_free,Vbc,rom_yM] = getVelocityBasisPOD(snapshots,sample_index,op
 %% input checks
 % concatenate snapshot matrices
 V_total_snapshots = [snapshots.uh_total';snapshots.vh_total'];
-Ds = diag(snapshots.dts/sum(snapshots.dts)).^(0.5);
-
+Ds = diag(snapshots.dts(sample_index)/options.rom.t_sample).^(0.5);
+% Ds = eye(size(V_total_snapshots));
 % check input dimensions
 Nspace  = size(V_total_snapshots,1); % total number of unknowns (Nu+Nv) of the original model
 Nu      = options.grid.Nu;
@@ -148,7 +148,9 @@ elseif (options.rom.mom_cons == 0 && options.rom.weighted_norm == 1)
     Om_invsqrt = spdiags(1./sqrt(Om),0,Nu+Nv,Nu+Nv);
     
     % make weighted snapshot matrix
+    % Vmod = Om_sqrt*V_svd;
     Vmod = Om_sqrt*V_svd*Ds;
+
     % perform SVD
     %     [W,S,Z] = svd(Vmod,'econ');
     % getBasis can use different methods to get basis: SVD/direct/snapshot

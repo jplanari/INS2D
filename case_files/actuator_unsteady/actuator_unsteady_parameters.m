@@ -18,7 +18,7 @@
     y1      = -2;
     y2      = 2;
 
-    Nx      = 150;                  % number of volumes in the x-direction
+    Nx      = 200;                  % number of volumes in the x-direction
     Ny      = 80;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
@@ -62,8 +62,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% stability settings, for unsteady solver
     ev_compute      = 0;
-    gershgorin      = 0;
+    gershgorin      = 1;
     stab_region     = 0; 
+    display_ebs     = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -80,7 +81,7 @@
     dt            = 4*pi/200;      % time step (for explicit methods it can be
                                % determined during running with dynamic_dt)
     t_start       = 0;         % start time
-    t_end         = 10*pi;        % end time
+    t_end         = 30*pi;        % end time
 
     CFL           = 1;              
     timestep.set  = 0;         % time step determined in timestep.m, 
@@ -155,7 +156,7 @@
                                    
 
     % for unsteady problems only:
-    nonlinear_startingvalues = 0;  % extrapolate values from last time step to get accurate initial guess
+    nonlinear_startingvalues = 1;  % extrapolate values from last time step to get accurate initial guess
                                    
     % location of PETSc-matlab mex files                                    
     petsc_mex        ='~/Software/petsc-3.1-p5/bin/matlab/';
