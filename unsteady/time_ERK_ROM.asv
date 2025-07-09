@@ -68,7 +68,7 @@ for i_RK=1:s_RK
             
             n  = round(tn/dt)+2; % need n corresponding to next time levell; note n=1 corresponds to t=0
             % f  = (options.rom.Mdiv*(Rn/dt + Rtemp) + options.rom.yMt(:,n)/dt)/c_RK(i_RK);
-            % fprintf('dif=%e\n',max(abs(determine_yMt(tn,options)-options.rom.yMt(:,n))));
+            fprintf('dif=%e\n',)
             f  = (options.rom.Mdiv*(Rn/dt + Rtemp) + determine_yMt(tn,options)/dt)/c_RK(i_RK);
         elseif (options.rom.rom_bc == 1)
             % this is unlikely but it could happen if the basis is not

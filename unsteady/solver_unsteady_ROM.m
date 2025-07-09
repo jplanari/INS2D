@@ -12,6 +12,19 @@ switch options.rom.rom_type
             disp(['loading datafile...: ' snapshot_data]);
             snapshots = load(snapshot_data,'uh_total','vh_total','p_total','dts','dt','t_end','Re','k','umom','vmom','maxdiv','Vbc');
 
+            t_snapshot = zeros(size(snapshots.dts));
+            if snapshots.dts(ceil(end/2)) == 0
+                for i=2:length(snapshots.dts)
+                    t_snapshot(i) = t_snapshot(i-1)+snapshots.dt;
+                end
+            else
+                for i=2:length(snapshots.dts)
+                    t_snapshot(i) = t_snapshot(i-1)+snapshots.dts(i);
+                end
+            end
+
+            options.rom.t_snp = t_snapshot;
+
             % dt that was used for creating the snapshot matrix:
             % dt_snapshots = snapshots.dt;
             % options.rom.dt_snapshots = dt_snapshots;
@@ -22,7 +35,12 @@ switch options.rom.rom_type
             
             % find indices of snapshot matrix that are needed
             % snapshot_sample_index = getSampleIndex(options.rom);
-            snapshot_sample_index = 1:length(snapshots.dts);
+            if(options.rom.t_sample > t_snapshot(end))
+                error('Sample time for snapshots greater than snapshot collecting period.');
+            end
+
+            id_n = find(t_snapshot < options.rom.t_sample, 1, 'last');
+            snapshot_sample_index = 1:id_n;
            
         end
         
@@ -169,6 +187,7 @@ while(t<t_end)
     
     %% dynamic timestepping:
     set_timestep_ROM;
+    % dt = dt*0.8;
     fprintf('dt=%e, phi=%e, t=%e\n',dt,phi,t);
     dts(n)=dt;
     ebc(n)=ebI;
