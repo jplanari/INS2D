@@ -82,7 +82,7 @@ dts = zeros(nt,1);
 ebc = zeros(nt,1);
 ebd = zeros(nt,1);
 
-while(n<=nt && t<t_end)
+while(t<t_end)
     
     % time step counter
     n = n+1;
