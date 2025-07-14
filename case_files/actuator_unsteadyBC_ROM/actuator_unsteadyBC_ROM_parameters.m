@@ -67,8 +67,9 @@
     
     rom_bc = 2; % 0: homogeneous (no-slip, periodic); 
                 % 1: non-homogeneous, time-independent;
-                % 2: non-homogeneous, time-dependent   
-    
+                % 2: non-homogeneous, time-dependent 
+                
+    lifting_fun = true; % use of lifting function to handle time-dependent boundary conditions
     
     % snapshot_data = 'results/actuator_unsteady_1.000e+02_150x80_2/matlab_data.mat';
     snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80/matlab_data.mat';
