@@ -66,7 +66,7 @@ else
         % estimate number of time steps that will be taken
         nt     = ceil((t_end-t_start)/dt);
         if options.time.adaptive
-            nt = 10*nt; % increase this estimate generously in case of adaptive time-stepping
+            nt = 2*nt; % increase this estimate generously in case of adaptive time-stepping
         end
         
         % allocate variables, including initial condition
