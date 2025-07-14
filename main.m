@@ -282,6 +282,14 @@ for j=1:Nsim
         uh_total = uh_total(1:n,:);
         vh_total = vh_total(1:n,:);
         p_total = p_total(1:n,:);
+
+        maxres = zeros(1:n,1);
+        maxdiv = zeros(1:n,1);
+        k      = zeros(1:n,1);
+        umom   = zeros(1:n,1);
+        vmom   = zeros(1:n,1);
+        time   = zeros(1:n,1);
+        nonlinear_its = zeros(1:n,1);
         fprintf(fcw,'saving results to Matlab file...\n');
         save(file_mat);
     end
