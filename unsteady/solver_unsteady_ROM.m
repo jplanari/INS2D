@@ -61,7 +61,7 @@ switch options.rom.rom_type
         % construct boudnary condition vector POD basis and corresponding
         % lifting function basis phi_inhom
         [phi_bc,~,Mbc] = POD(X_bc,Mbc,10-8);
-        [phi_inhom,R_inhom,tilde_phi_inhom1] = get_phi_inhom(phi_bc,options);
+        F_inhom = get_F_inhom(phi_bc,options);
         
     case 'Fourier'
 
