@@ -176,6 +176,7 @@ voi = {
     'method', 0;...
     'theta', 0.5;... % theta value for implicit theta method
     'beta', [];... % beta value for oneleg beta method
+    'adaptive', false; ... % true if time step sizes are chosen adaptively
     };
 
 % options = accumulate_object(object,voi,options);

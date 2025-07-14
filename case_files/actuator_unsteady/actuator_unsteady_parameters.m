@@ -97,6 +97,8 @@
     method        = 20;
     RK            = 'RK44';
 
+    adaptive = true;
+
     % for methods that are not self-starting, e.g. AB-CN or one-leg
     % beta, we need a startup method.
     % a good choice is for example explicit RK
