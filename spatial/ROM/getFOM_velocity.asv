@@ -5,7 +5,7 @@ B   = options.rom.B;
 Vbc = options.rom.Vbc;
 
 if options.rom.lifting_fun
-    V = B*R + options.rom.F_inhom*a_bc(t,options);
-else
-    V = B*R + Vbc;
-end
+    
+
+V   = B*R + Vbc;
+

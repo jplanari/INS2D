@@ -116,7 +116,7 @@ if (options.rom.div_free == 1)
 
     end
     
-elseif (options.rom.div_free == 0)
+elseif (options.rom.div_free == 0) & ~options.rom.lifting_fun
     
     % here we always precompute:
     options.rom.Mdiv = options.rom.Bp'*options.discretization.M*options.rom.B;

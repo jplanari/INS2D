@@ -62,6 +62,15 @@ switch options.rom.rom_type
         % lifting function basis phi_inhom
         [phi_bc,~,Mbc] = POD(X_bc,Mbc,10-8);
         F_inhom = get_F_inhom(phi_bc,options);
+
+        options.rom.phi_bc = phi_bc;
+        options.rom.F_inhom = F_inhom;
+
+        % additionally store projected boundary condition vector snapshots
+        % and corresponding time steps for online computation of a_bc (via
+        % interpolation)
+        options.rom.A_BC = phi_bc'*X_bc;
+        options.rom.A_BC_times = t_snapshots;
         
     case 'Fourier'
 

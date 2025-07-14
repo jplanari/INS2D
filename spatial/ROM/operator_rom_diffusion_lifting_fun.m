@@ -11,6 +11,7 @@ Diff_   = P*blkdiag(Diffu, Diffv)*B;
 
 phi_bc = options.rom.phi_bc;
 M_bc = size(phi_bc,2);
+M = options.rom.M;
 yDiff_BC_ = zeros(M,M_bc);
 
 for i = 1:M_bc
