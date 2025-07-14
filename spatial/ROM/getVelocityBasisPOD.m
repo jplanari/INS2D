@@ -69,7 +69,7 @@ elseif (options.rom.rom_bc == 2)
         if (options.rom.Mp > rank(rom_yM))
             warning('Number of pressure modes larger than rank of divergence of snapshot matrix');
         end
-    else
+    elseif options.rom.lifting_fun
         % compute V_inhom for each snapshot such that resulting snapshots
         % V_hom = V - V_inhom satisfies M_h V_hom = 0
         % Vbc = zeros(size(V_total_snapshots));

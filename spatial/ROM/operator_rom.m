@@ -22,7 +22,11 @@ end
 
 %% diffusion
 if (options.rom.precompute_diffusion == 1)
-    [yDiff,Diff] = operator_rom_diffusion(P,options);
+    if options.rom.lifting_fun
+        [yDiff,Diff] = operator_rom_diffusion_lifting_fun(P,options);
+    else
+        [yDiff,Diff] = operator_rom_diffusion(P,options);
+    end
 
     options.rom.Diff  = Diff;
     options.rom.yDiff = yDiff;
@@ -30,7 +34,11 @@ end
 
 %% convection 
 if (options.rom.precompute_convection == 1)
-    [conv_bc,conv_linear,conv_quad] = operator_rom_convection(P,options);
+    if options.rom.lifting_fun
+        [conv_bc,conv_linear,conv_quad] = operator_rom_convection_lifting_fun(P,options);
+    else
+        [conv_bc,conv_linear,conv_quad] = operator_rom_convection(P,options);
+    end
 
     options.rom.Conv_quad   = conv_quad;
     options.rom.Conv_linear = conv_linear;
