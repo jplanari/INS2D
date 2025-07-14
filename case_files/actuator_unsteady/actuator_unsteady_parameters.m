@@ -18,8 +18,8 @@
     y1      = -2;
     y2      = 2;
 
-    Nx      = 200;                  % number of volumes in the x-direction
-    Ny      = 80;                   % number of volumes in the y-direction
+    Nx      = 10;                  % number of volumes in the x-direction
+    Ny      = 10;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
     sy      = 1;

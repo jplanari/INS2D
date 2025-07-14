@@ -1,7 +1,7 @@
 % input file                
 % project = 'TG';   % project name used in filenames
 run_multiple = 1;
-mesh_list    = 2; %[10 20 40 80];
+mesh_list    = 10; %[10 20 40 80];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

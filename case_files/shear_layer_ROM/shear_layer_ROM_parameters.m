@@ -2,7 +2,7 @@
 % project = 'shear_layer_ROM';   % project name used in filenames
 run_multiple = 1;
 %M_list = [6 4 8 16 2 4 8 16];
-M_list = [16, 32, 64, 128, 256, 300];
+M_list = [32];
 % M_list = 400;
 % M_list = [16 16 16];
 % M_list = [2 2  4 4 8 8 16 16 32 32]; % 5 10 15 20 ];
@@ -75,7 +75,7 @@ method_list = {'RK44'};
     % 40x40:
 %     snapshot_data = 'results/shear_layer01/matlab_data.mat';
     % 200x200:
-    snapshot_data = 'results/shear_layer_1.000e+03_70x70_18/matlab_data.mat';
+    snapshot_data = 'results/shear_layer_1.000e+03_70x70_7/matlab_data.mat';
     % 200x200, with RK4 until t=7
 %     snapshot_data = 'results/shear_layer_ROM_1.000e+100_200x200/matlab_data.mat';
     
@@ -190,10 +190,10 @@ method_list = {'RK44'};
     tecplot.write    = 0;          % write to tecplot file
     tecplot.n        = 1;          % write tecplot files every n timesteps
     
-    rtp.show         = 0;          % real time plotting 
-    rtp.n            = 10;
-    rtp.movie        = 0;          % make movie based on the real time plots
-    rtp.moviename    = 'inviscid_shear_layer_ROM_GL1'; % movie name
+    rtp.show         = 1;          % real time plotting 
+    rtp.n            = 2;
+    rtp.movie        = 1;          % make movie based on the real time plots
+    rtp.moviename    = 'shear_layer_ROM_32'; % movie name
     rtp.movierate    = 15;         % frame rate (/s); note one frame is taken every rtp.n timesteps
     
 %     statistics.write = 1;          % write averages and fluctuations each

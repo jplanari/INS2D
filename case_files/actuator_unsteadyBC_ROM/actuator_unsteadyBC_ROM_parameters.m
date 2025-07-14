@@ -18,7 +18,7 @@
     y1      = -2;
     y2      = 2;
 
-    Nx      = 200;                  % number of volumes in the x-direction
+    Nx      = 150;                  % number of volumes in the x-direction
     Ny      = 80;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
@@ -46,7 +46,7 @@
 %%% reduced order model
 
     rom    = 1;      % set to 1 to use ROM solver
-    M      = 64;     % number of modes used
+    M      = 256;     % number of modes used
     Mp     = M;
     % the full snapshotdataset can be reduced by taking as index
     % 1:Nskip:Nsnapshots
@@ -61,14 +61,14 @@
     process_iteration_FOM = 1; % execute the process_iteration script each time step (requires FOM evaluation)     
     weighted_norm         = 1;    
     basis_type            = 3; % 0: choose depending on matrix size, 1: SVD, 2: direct, 3: method of snapshots
-    mom_cons              = 0; 
+    mom_cons              = 1; 
     
     rom_bc = 2; % 0: homogeneous (no-slip, periodic); 
                 % 1: non-homogeneous, time-independent;
                 % 2: non-homogeneous, time-dependent   
     
     
-    snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80_3/matlab_data.mat';
+    snapshot_data = 'results/actuator_unsteady_1.000e+02_150x80_4/matlab_data.mat';
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

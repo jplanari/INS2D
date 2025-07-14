@@ -171,9 +171,9 @@
     tecplot.write    = 0;          % write to tecplot file
     tecplot.n        = 1;          % write tecplot files every n timesteps
     
-    rtp.show         = 0;          % real time plotting 
+    rtp.show         = 1;          % real time plotting 
     rtp.n            = 2;
-    rtp.movie        = 0;          % make movie based on the real time plots
+    rtp.movie        = 1;          % make movie based on the real time plots
     rtp.moviename    = 'viscous_shear_layer_Re100_N200_FOM'; % movie name
     rtp.movierate    = 15;         % frame rate (/s); note one frame is taken every rtp.n timesteps
     
