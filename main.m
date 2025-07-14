@@ -54,6 +54,7 @@ addpath('spatial/boundaryconditions/proposed/');
 addpath('spatial/ROM/');
 addpath('steady/');
 addpath('unsteady/');
+addpath('unsteady/ROM_bases_setup');
 addpath('testsuite/');
 addpath('stability/')
 

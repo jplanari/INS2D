@@ -72,12 +72,16 @@ elseif (options.rom.rom_bc == 2)
     else
         % compute V_inhom for each snapshot such that resulting snapshots
         % V_hom = V - V_inhom satisfies M_h V_hom = 0
+        % Vbc = zeros(size(V_total_snapshots));
+        Vbc = [];
+        rom_yM = [];
         for i = size(V_total_snapshots,2)
             V = V_total_snapshots(:,i);
             yM = -options.discretization.M*V;
             f       = yM;
             dp      = pressure_poisson(f,options.time.t_start,options);
             V_inhom = - Om_inv.*(options.discretization.G*dp);
+            % Vbc(:,i) = V_inhom;
             V_total_snapshots(:,i) = V - V_inhom;
         end
     end

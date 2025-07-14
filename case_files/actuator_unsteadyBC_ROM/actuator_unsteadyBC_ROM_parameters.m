@@ -18,7 +18,7 @@
     y1      = -2;
     y2      = 2;
 
-    Nx      = 150;                  % number of volumes in the x-direction
+    Nx      = 200;                  % number of volumes in the x-direction
     Ny      = 80;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
@@ -48,6 +48,8 @@
     rom    = 1;      % set to 1 to use ROM solver
     M      = 64;     % number of modes used
     Mp     = M;
+    Mbc = M;  % number of boundary condition modes (see no pressure article)
+
     % the full snapshotdataset can be reduced by taking as index
     % 1:Nskip:Nsnapshots
     t_sample  = 8*pi;  % part of snapshot matrix used for building SVD
@@ -103,6 +105,8 @@
     % method 21 : generic implicit RK, can also be used for ROM    
     method        = 20;
     RK            = 'RK44';
+
+    adaptive = true;
 
     % for methods that are not self-starting, e.g. AB-CN or one-leg
     % beta, we need a startup method.

@@ -51,17 +51,7 @@ switch options.rom.rom_type
             [options.rom.Bp,options.rom.Mp] = getPressureBasisPOD(snapshots,snapshot_sample_index,options);
         end
 
-        %% construct boundary condition basis
-        % compute boundary condition vector snapshots
-        X_bc = get_X_bc(t_snapshot,options);
-
-        % construct matrices mapping ybc to boundary contribution vectors
-        options = bc_mappings(options);
-
-        % construct boudnary condition vector POD basis and corresponding
-        % lifting function basis phi_inhom
-        [phi_bc,~,Mbc] = POD(X_bc,Mbc,10-8);
-        [phi_inhom,R_inhom,tilde_phi_inhom1] = get_phi_inhom(phi_bc,options);
+        % cins
         
     case 'Fourier'
 
