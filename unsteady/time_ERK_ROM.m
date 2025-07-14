@@ -60,7 +60,7 @@ for i_RK=1:s_RK
     % time level of the computed stage
     ti         = tn + c_RK(i_RK)*dt;
     
-    if (options.rom.div_free == 0)
+    if (options.rom.div_free == 0) && ~options.rom.lifting_fun
         % ROM not divergence free, e.g. in case of rom_bc = 2
         % NOTE: would be nicer to do a call to a subroutine that returns
         % options.rom.yMt at the required time instance
@@ -99,16 +99,19 @@ for i_RK=1:s_RK
     
 end
 
-
-if (options.rom.div_free == 1)
-    if (options.rom.pressure_recovery == 1)
-        q = pressure_additional_solve_ROM(R,tn+dt,options);
+if ~options.rom.lifting_fun
+    if (options.rom.div_free == 1)
+        if (options.rom.pressure_recovery == 1)
+            q = pressure_additional_solve_ROM(R,tn+dt,options);
+        else
+            q = qn;
+        end
     else
-        q = qn;
+        % this might be improved like in FOM methods
+        q = dq;
     end
 else
-    % this might be improved like in FOM methods
-    q = dq;
+    q = [];
 end
 
 Rnew = R;

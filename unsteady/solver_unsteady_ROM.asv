@@ -51,7 +51,26 @@ switch options.rom.rom_type
             [options.rom.Bp,options.rom.Mp] = getPressureBasisPOD(snapshots,snapshot_sample_index,options);
         end
 
-        % cins
+        %% construct boundary condition basis
+        % compute boundary condition vector snapshots
+        X_bc = get_X_bc(t_snapshot,options);
+
+        % construct matrices mapping ybc to boundary contribution vectors
+        options = bc_mappings(options);
+
+        % construct boudnary condition vector POD basis and corresponding
+        % lifting function basis phi_inhom
+        [phi_bc,~,Mbc] = POD(X_bc,Mbc,10-8);
+        F_inhom = get_F_inhom(phi_bc,options);
+
+        options.rom.phi_bc = phi_bc;
+        options.rom.F_inhom = F_inhom;
+
+        % additionally store projected boundary condition vector snapshots
+        % and corresponding time steps for online computation of a_bc (via
+        % interpolation)
+        options.rom.a_BCs = phi_bc'*X_bc;
+        options.rom.a_BCs_times = t_snapshot;
         
     case 'Fourier'
 
@@ -92,11 +111,12 @@ options = operator_rom(options);
 precompute_end(j) = toc-precompute_start
 
 %% Initialize RedEigCD eigma method
+if (options.rom.precompute_convection == 1) && (options.rom.precompute_diffusion == 1)
 options = evaluateCrEV(options,'eig');
 Cl = options.rom.Conv_linear;
 options.rom.eb_Cl = max(abs(eig(0.5*(Cl-Cl'))));
 options.rom.eb_D = max(abs(eig(options.rom.Diff-0.5*(Cl+Cl'))));
-
+end
 %% initialize reduced order solution
 [R,q] = initializeROM(V,p,t,options);
 

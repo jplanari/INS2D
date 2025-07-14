@@ -60,17 +60,18 @@ switch options.rom.rom_type
 
         % construct boudnary condition vector POD basis and corresponding
         % lifting function basis phi_inhom
-        [phi_bc,~,Mbc] = POD(X_bc,Mbc,10-8);
+        [phi_bc,~,Mbc] = POD(X_bc,Mbc,10e-8);
         F_inhom = get_F_inhom(phi_bc,options);
 
         options.rom.phi_bc = phi_bc;
         options.rom.F_inhom = F_inhom;
+        options.rom.Mbc = Mbc;
 
         % additionally store projected boundary condition vector snapshots
         % and corresponding time steps for online computation of a_bc (via
         % interpolation)
-        options.rom.A_BC = phi_bc'*X_bc;
-        options.rom.A_BC_times = t_snapshots;
+        options.rom.a_BCs = phi_bc'*X_bc;
+        options.rom.a_BCs_times = t_snapshot;
         
     case 'Fourier'
 
@@ -111,11 +112,13 @@ options = operator_rom(options);
 precompute_end(j) = toc-precompute_start
 
 %% Initialize RedEigCD eigma method
-options = evaluateCrEV(options,'eig');
-Cl = options.rom.Conv_linear;
-options.rom.eb_Cl = max(abs(eig(0.5*(Cl-Cl'))));
-options.rom.eb_D = max(abs(eig(options.rom.Diff-0.5*(Cl+Cl'))));
-
+if options.time.adaptive
+% if (options.rom.precompute_convection == 1) && (options.rom.precompute_diffusion == 1)
+    options = evaluateCrEV(options,'eig');
+    Cl = options.rom.Conv_linear;
+    options.rom.eb_Cl = max(abs(eig(0.5*(Cl-Cl'))));
+    options.rom.eb_D = max(abs(eig(options.rom.Diff-0.5*(Cl+Cl'))));
+end
 %% initialize reduced order solution
 [R,q] = initializeROM(V,p,t,options);
 
@@ -199,19 +202,23 @@ eps    = 1e-12;
 disp('starting time-stepping...');
 
 time_start = toc
-dts = zeros(nt,1);
-ebd = options.rom.eb_D*ones(nt,1);
-ebc = zeros(nt,1);
+if options.time.adaptive
+    dts = zeros(nt,1);
+    ebd = options.rom.eb_D*ones(nt,1);
+    ebc = zeros(nt,1);
+end
 
 n=1;
 while(t<t_end)
     
-    %% dynamic timestepping:
-    set_timestep_ROM;
-    % dt = dt*0.8;
-    fprintf('dt=%e, phi=%e, t=%e\n',dt,phi,t);
-    dts(n)=dt;
-    ebc(n)=ebI;
+    if options.time.adaptive
+        %% dynamic timestepping:
+        set_timestep_ROM;
+        % dt = dt*0.8;
+        fprintf('dt=%e, phi=%e, t=%e\n',dt,phi,t);
+        dts(n)=dt;
+        ebc(n)=ebI;
+    end
 
     % fprintf("t=%e\n",t)
     

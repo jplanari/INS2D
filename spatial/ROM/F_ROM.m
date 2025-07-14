@@ -26,7 +26,7 @@ if (options.rom.precompute_convection == 0 || options.rom.precompute_diffusion =
 end
 
 % FOM pressure field (only needed when not precomputing)
-if (options.rom.div_free == 0 && options.rom.precompute_pressure == 0)
+if (options.rom.div_free == 0 && options.rom.precompute_pressure == 0) && ~options.rom.lifting_fun
     p = getFOM_pressure(q,t,options);
 end
 

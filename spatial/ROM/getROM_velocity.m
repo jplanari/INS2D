@@ -3,7 +3,9 @@ function [R] = getROM_velocity(V,t,options)
 
 % subtract boundary condition contribution (zero if not used)
 % if V is a NV*Nt matrix, then this vector is subtracted from each column
-V   = V - options.rom.Vbc;
+if ~options.rom.lifting_fun
+    V   = V - options.rom.Vbc;
+end
 
 switch options.rom.rom_type
     

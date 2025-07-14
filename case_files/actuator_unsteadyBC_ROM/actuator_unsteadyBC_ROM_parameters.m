@@ -55,8 +55,10 @@
     t_sample  = 8*pi;  % part of snapshot matrix used for building SVD
     dt_sample = 4*pi/200; % frequency of snapshots to be used for SVD
     
-    precompute_convection = 1;
-    precompute_diffusion  = 1;
+    % precompute_convection = 1;
+    % precompute_diffusion  = 1;
+    precompute_convection = 0;
+    precompute_diffusion  = 0;
     precompute_force      = 0;
     pressure_recovery     = 0;
     pressure_precompute   = 0;
@@ -107,7 +109,8 @@
     method        = 20;
     RK            = 'RK44';
 
-    adaptive = true;
+    % adaptive = true;
+    adaptive = false;
 
     % for methods that are not self-starting, e.g. AB-CN or one-leg
     % beta, we need a startup method.
