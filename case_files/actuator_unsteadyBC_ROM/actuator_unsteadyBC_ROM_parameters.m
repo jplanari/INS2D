@@ -46,7 +46,7 @@
 %%% reduced order model
 
     rom    = 1;      % set to 1 to use ROM solver
-    M      = 20;     % number of modes used
+    M      = 64;     % number of modes used
     Mp     = M;
     Mbc = M;  % number of boundary condition modes (see no pressure article)
 
@@ -55,10 +55,10 @@
     t_sample  = 8*pi;  % part of snapshot matrix used for building SVD
     dt_sample = 4*pi/200; % frequency of snapshots to be used for SVD
     
-    % precompute_convection = 1;
-    % precompute_diffusion  = 1;
-    precompute_convection = 0;
-    precompute_diffusion  = 0;
+    precompute_convection = 1;
+    precompute_diffusion  = 1;
+    % precompute_convection = 0;
+    % precompute_diffusion  = 0;
     precompute_force      = 0;
     pressure_recovery     = 0;
     pressure_precompute   = 0;

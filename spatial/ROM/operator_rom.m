@@ -14,14 +14,14 @@ elseif (options.rom.weighted_norm == 1)
 end
 
 if (options.rom.precompute_convection == 1 || options.rom.precompute_diffusion == 1 || ...
-    options.rom.precompute_force == 1)
+    options.rom.precompute_force == 1) || options.time.adaptive
     % this is the projector for the momentum equations:
     P = B'*spdiags(Diag,0,NV,NV);
 
 end
 
 %% diffusion
-if (options.rom.precompute_diffusion == 1)
+if (options.rom.precompute_diffusion == 1) || options.time.adaptive
     if options.rom.lifting_fun
         [yDiff,Diff] = operator_rom_diffusion_lifting_fun(P,options);
     else
@@ -33,7 +33,7 @@ if (options.rom.precompute_diffusion == 1)
 end
 
 %% convection 
-if (options.rom.precompute_convection == 1)
+if (options.rom.precompute_convection == 1) || options.time.adaptive
     if options.rom.lifting_fun
         [conv_bc,conv_linear,conv_quad] = operator_rom_convection_lifting_fun(P,options);
     else
