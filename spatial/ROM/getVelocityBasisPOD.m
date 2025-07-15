@@ -75,15 +75,17 @@ elseif (options.rom.rom_bc == 2)
         % Vbc = zeros(size(V_total_snapshots));
         Vbc = [];
         rom_yM = [];
-        for i = size(V_total_snapshots,2)
+        for i = 1:size(V_total_snapshots,2)
             V = V_total_snapshots(:,i);
             yM = -options.discretization.M*V;
             f       = yM;
             dp      = pressure_poisson(f,options.time.t_start,options);
-            V_inhom = - Om_inv.*(options.discretization.G*dp);
+            V_inhom = -Om_inv.*(options.discretization.G*dp);
             % Vbc(:,i) = V_inhom;
-            V_total_snapshots(:,i) = V - V_inhom;
+            V_hom =  V - V_inhom;
+            V_total_snapshots(:,i) = V_hom;           
         end
+        div_snapshots = max(abs(options.discretization.M*V_total_snapshots),[],1); %
     end
 end
 

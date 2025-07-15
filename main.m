@@ -55,6 +55,7 @@ addpath('spatial/ROM/');
 addpath('steady/');
 addpath('unsteady/');
 addpath('unsteady/ROM_bases_setup');
+addpath('unsteady/adaptive_time_stepping');
 addpath('testsuite/');
 addpath('stability/')
 
@@ -275,14 +276,9 @@ for j=1:Nsim
     
     %% post-processing
     fprintf(fcw,'post-processing...\n');
-    post_processing;
-    
-    % save all data to a matlab file
-    if (save_file == 1)
+
+    if options.time.adaptive
         dts = dts(1:n);
-        uh_total = uh_total(1:n,:);
-        vh_total = vh_total(1:n,:);
-        p_total = p_total(1:n,:);
 
         maxres = maxres(1:n,1);
         maxdiv = maxdiv(1:n,1);
@@ -291,6 +287,17 @@ for j=1:Nsim
         vmom   = vmom(1:n,1);
         time   = time(1:n,1);
         nonlinear_its = nonlinear_its(1:n,1);
+    end
+    uh_total = uh_total(1:n,:);
+    vh_total = vh_total(1:n,:);
+    p_total = p_total(1:n,:);
+
+
+
+    post_processing;
+    
+    % save all data to a matlab file
+    if (save_file == 1)
         fprintf(fcw,'saving results to Matlab file...\n');
         save(file_mat);
     end

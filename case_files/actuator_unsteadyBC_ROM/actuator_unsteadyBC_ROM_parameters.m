@@ -46,7 +46,7 @@
 %%% reduced order model
 
     rom    = 1;      % set to 1 to use ROM solver
-    M      = 64;     % number of modes used
+    M      = 20;     % number of modes used
     Mp     = M;
     Mbc = M;  % number of boundary condition modes (see no pressure article)
 
