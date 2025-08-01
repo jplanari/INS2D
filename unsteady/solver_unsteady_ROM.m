@@ -111,17 +111,16 @@ precompute_start = toc;
 options = operator_rom(options);
 precompute_end(j) = toc-precompute_start
 
+
+%% initialize reduced order solution
+[R,q] = initializeROM(V,p,t,options);
+
 %% Initialize RedEigCD eigma method
 if options.time.adaptive
 % if (options.rom.precompute_convection == 1) && (options.rom.precompute_diffusion == 1)
     options = evaluateCrEV(options,'eig');
-    Cl = options.rom.Conv_linear;
-    options.rom.eb_Cl = max(abs(eig(0.5*(Cl-Cl'))));
-    options.rom.eb_D = max(abs(eig(options.rom.Diff-0.5*(Cl+Cl'))));
+    options.rom.eb_D = max(abs(eig(options.rom.Diff)));
 end
-%% initialize reduced order solution
-[R,q] = initializeROM(V,p,t,options);
-
 
 % map back to FOM space to get initial properties
 if (options.rom.process_iteration_FOM == 1)

@@ -1,6 +1,6 @@
-ebI = abs(R')*options.rom.ev_Cr+options.rom.eb_Cl;
-% ebI = abs(R')*options.rom.ev_Cr;
-ebR = options.rom.eb_D;
+Clt = options.rom.Conv_linear*kron(eye(M),get_a_bc(t,options));
+ebI = abs(R')*options.rom.ev_Cr+gershgorin(0.5*(Clt-Clt'));
+ebR = options.rom.eb_D+gershgorin(0.5*(Clt+Clt'));
 
 [~,b,~,~] = getRKmethod(options.time.RK);
 s = length(b);

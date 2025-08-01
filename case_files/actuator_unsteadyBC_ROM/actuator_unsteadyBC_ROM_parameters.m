@@ -74,7 +74,7 @@
     lifting_fun = true; % use of lifting function to handle time-dependent boundary conditions
     
     % snapshot_data = 'results/actuator_unsteady_1.000e+02_150x80_2/matlab_data.mat';
-    snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80/matlab_data.mat';
+    snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80_1/matlab_data.mat';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -109,8 +109,8 @@
     method        = 20;
     RK            = 'RK44';
 
-    % adaptive = true;
-    adaptive = false;
+    adaptive = true;
+    % adaptive = false;
 
     % for methods that are not self-starting, e.g. AB-CN or one-leg
     % beta, we need a startup method.
