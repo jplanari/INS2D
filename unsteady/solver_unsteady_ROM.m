@@ -53,6 +53,7 @@ switch options.rom.rom_type
 
         %% construct boundary condition basis
         % compute boundary condition vector snapshots
+        if options.rom.rom_bc == 2
         X_bc = get_X_bc(t_snapshot,options);
 
         % construct matrices mapping ybc to boundary contribution vectors
@@ -72,7 +73,7 @@ switch options.rom.rom_type
         % interpolation)
         options.rom.a_BCs = phi_bc'*X_bc;
         options.rom.a_BCs_times = t_snapshot;
-        
+        end
     case 'Fourier'
 
         Vbc    = zeros(options.grid.NV,1);

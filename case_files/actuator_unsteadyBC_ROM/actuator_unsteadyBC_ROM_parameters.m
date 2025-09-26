@@ -46,7 +46,7 @@
 %%% reduced order model
 
     rom    = 1;      % set to 1 to use ROM solver
-    M      = 64;     % number of modes used
+    M      = 200;     % number of modes used
     Mp     = M;
     Mbc = M;  % number of boundary condition modes (see no pressure article)
 
@@ -74,7 +74,7 @@
     lifting_fun = true; % use of lifting function to handle time-dependent boundary conditions
     
     % snapshot_data = 'results/actuator_unsteady_1.000e+02_150x80_2/matlab_data.mat';
-    snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80_1/matlab_data.mat';
+    snapshot_data = 'results/actuator_unsteady_1.000e+02_200x80/matlab_data.mat';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

@@ -18,8 +18,8 @@
     y1      = 0;
     y2      = 2*pi;
 
-    Nx      = 70;          % number of volumes in the x-direction
-    Ny      = 70;          % number of volumes in the y-direction
+    Nx      = 100;          % number of volumes in the x-direction
+    Ny      = 100;          % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
     sy      = 1;

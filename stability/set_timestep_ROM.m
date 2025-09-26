@@ -1,4 +1,9 @@
-Clt = options.rom.Conv_linear*kron(eye(M),get_a_bc(t,options));
+if options.rom.rom_bc == 2
+    Clt = options.rom.Conv_linear*kron(eye(M),get_a_bc(t,options));
+else
+    Clt = zeros(M);
+end
+
 ebI = abs(R')*options.rom.ev_Cr+gershgorin(0.5*(Clt-Clt'));
 ebR = options.rom.eb_D+gershgorin(0.5*(Clt+Clt'));
 

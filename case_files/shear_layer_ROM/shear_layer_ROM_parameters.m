@@ -2,8 +2,8 @@
 % project = 'shear_layer_ROM';   % project name used in filenames
 run_multiple = 1;
 %M_list = [6 4 8 16 2 4 8 16];
-M_list = [16, 32, 64, 128, 256, 300];
-% M_list = 400;
+% M_list = [16, 32, 64, 128, 200];
+M_list = 200;
 % M_list = [16 16 16];
 % M_list = [2 2  4 4 8 8 16 16 32 32]; % 5 10 15 20 ];
 mesh_list = ones(length(M_list),1);
@@ -25,8 +25,8 @@ method_list = {'RK44'};
     y1      = 0;
     y2      = 2*pi;
 
-    Nx      = 70;                   % number of volumes in the x-direction
-    Ny      = 70;                   % number of volumes in the y-direction
+    Nx      = 100;                   % number of volumes in the x-direction
+    Ny      = 100;                   % number of volumes in the y-direction
 
     sx      = 1;                  % stretch factor
     sy      = 1;
@@ -75,7 +75,7 @@ method_list = {'RK44'};
     % 40x40:
 %     snapshot_data = 'results/shear_layer01/matlab_data.mat';
     % 200x200:
-    snapshot_data = 'results/shear_layer_1.000e+03_70x70_18/matlab_data.mat';
+    snapshot_data = 'results/shear_layer_1.000e+03_100x100/matlab_data.mat';
     % 200x200, with RK4 until t=7
 %     snapshot_data = 'results/shear_layer_ROM_1.000e+100_200x200/matlab_data.mat';
     
@@ -105,7 +105,7 @@ method_list = {'RK44'};
         dt            = 0.01;       % time step (for explicit methods it can be
                                    % determined during running with dynamic_dt)
         t_start       = 0;        % start time
-        t_end         = 100;         % end time
+        t_end         = 20;         % end time
 
         CFL           = 1;              
         timestep.set  = 0;         % time step determined in timestep.m, 
@@ -122,6 +122,9 @@ method_list = {'RK44'};
         % method 21 : generic implicit RK, can also be used for ROM            
         method            = 20;
         RK                = 'RK44'; %'RK44';
+
+        adaptive = true;
+        % adaptive = false;
 
         % for methods that are not self-starting, e.g. AB-CN or one-leg
         % beta, we need a startup method.

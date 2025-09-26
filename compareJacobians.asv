@@ -1,0 +1,30 @@
+function [options] = compareJacobians(R, tn, options)
+
+M = options.rom.M;
+CR = options.rom.Cr;
+
+Jp = zeros(M,M);
+J = zeros(M,M);
+for i=1:M
+    J(:,i) = CR(:,:,i)*R; %Dropped term
+    Jp = Jp + R(i) * CR(:,:,i); %Reduced Jacobian approximation
+end
+J = J + Jp; %Dropped + reduced
+
+if options.rom.rom_bc == 2
+    Clt = options.rom.Conv_linear*kron(eye(M),get_a_bc(tn,options));
+else
+    Clt = zeros(M,M);
+end
+
+symClt = 0.5*(Clt-Clt');
+
+eig_J = max(abs(imag(eig(J+symClt))));
+eig_Jp = max(abs(imag(eig(Jp))));
+
+
+ebI = abs(R')*options.rom.ev_Cr+gershgorin(0.5*(Clt-Clt'));
+gershI = gershgorin(Jp);
+
+fprintf("%d\t%e\t%e\t%e\t%e\n",M,eig_J,eig_Jp,ebI,gershI);
+end
